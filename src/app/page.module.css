@@ -142,7 +142,7 @@
 
 .searchInput {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 3rem;
+  padding: 0.75rem 3rem 0.75rem 3rem;
   background: var(--muted);
   border: 1px solid var(--border);
   border-radius: 9999px;
@@ -167,12 +167,13 @@
   border: none;
   color: var(--muted-foreground);
   cursor: pointer;
-  padding: 0.25rem;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .clearButton:hover {
