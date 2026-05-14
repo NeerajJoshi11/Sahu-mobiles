@@ -28,6 +28,11 @@ export async function proxy(request: NextRequest) {
 
     // Protect all other admin routes
     if (!sessionCookie) {
+      // Allow public GET access to settings (for checkout pincode verification)
+      if (pathname === "/api/admin/settings" && request.method === "GET") {
+        return NextResponse.next();
+      }
+      
       if (pathname.startsWith("/api/")) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
