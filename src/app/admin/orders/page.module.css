@@ -12,19 +12,51 @@
 
 .subtitle {
   color: var(--muted-foreground);
+  font-size: 1rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  background: var(--muted);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--foreground);
+  font-size: 0.95rem;
+}
+
+.statusSelect {
+  padding: 0.75rem 1rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--foreground);
+  min-width: 180px;
+  cursor: pointer;
 }
 
 .tableWrapper {
   background: var(--muted);
   border: 1px solid var(--border);
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  min-width: 800px;
 }
 
 .table th {
@@ -50,6 +82,8 @@
 .customerInfo {
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
+  min-width: 150px;
 }
 
 .customerName {
@@ -57,9 +91,21 @@
   color: var(--foreground);
 }
 
+.customerPhone {
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+}
+
 .customerEmail {
   font-size: 0.875rem;
   color: var(--muted-foreground);
+}
+
+.addressInfo {
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+  max-width: 200px;
+  line-height: 1.4;
 }
 
 .itemsList {
@@ -75,16 +121,28 @@
 }
 
 .statusBadge {
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 700;
+  border: none;
+  cursor: pointer;
   text-transform: uppercase;
+  width: 100%;
+}
+
+.statusBadge:focus {
+  outline: 2px solid var(--accent);
 }
 
 .pending {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--muted-foreground);
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.processing {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
 }
 
 .shipped {
@@ -92,9 +150,19 @@
   color: #d4af37;
 }
 
+.completed {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+}
+
 .delivered {
-  background: rgba(37, 211, 102, 0.1);
-  color: #25d366;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.cancelled {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .viewBtn {

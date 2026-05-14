@@ -7,6 +7,8 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   const fetchOrders = async () => {
     try {
@@ -65,7 +67,7 @@ export default function AdminOrdersPage() {
 
   const handleUpdateStatus = async (id: string, status: string) => {
     try {
-      const res = await fetch(`/api/admin/orders/${id}/delivery`, {
+      const res = await fetch(`/api/admin/orders/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -79,6 +81,16 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = 
+      order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.id.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesStatus = statusFilter === "ALL" || order.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
+
   if (loading) return <div className={styles.loading}>Loading orders...</div>;
 
   return (
@@ -90,33 +102,60 @@ export default function AdminOrdersPage() {
 
       {error && <div className={styles.error}>{error}</div>}
 
+      <div className={styles.filters}>
+        <input 
+          type="text" 
+          placeholder="Search by ID or Customer..." 
+          className={styles.searchInput}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <select 
+          className={styles.statusSelect}
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="ALL">All Statuses</option>
+          <option value="PENDING">Pending</option>
+          <option value="PROCESSING">Processing</option>
+          <option value="COMPLETED">Completed</option>
+          <option value="DELIVERED">Delivered</option>
+          <option value="CANCELLED">Cancelled</option>
+        </select>
+      </div>
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
             <tr>
               <th>Order ID</th>
               <th>Date</th>
-              <th>Customer</th>
+              <th>Customer & Phone</th>
+              <th>Address</th>
               <th>Items</th>
               <th>Total</th>
               <th>Delivery</th>
-              <th>Provider</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {orders.length === 0 ? (
+            {filteredOrders.length === 0 ? (
               <tr><td colSpan={9} style={{ textAlign: 'center', padding: '2rem' }}>No orders found.</td></tr>
             ) : (
-              orders.map((order) => (
+              filteredOrders.map((order) => (
                 <tr key={order.id}>
                   <td className={styles.orderId}>#{order.id.slice(-6).toUpperCase()}</td>
                   <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td>
                     <div className={styles.customerInfo}>
                       <span className={styles.customerName}>{order.customerName}</span>
-                      <span className={styles.customerEmail}>{order.customerEmail}</span>
+                      <span className={styles.customerPhone}>📞 {order.customerPhone}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className={styles.addressInfo}>
+                      {order.address}, {order.pincode}
                     </div>
                   </td>
                   <td>
@@ -137,42 +176,35 @@ export default function AdminOrdersPage() {
                       {order.deliveryMethod === 'EXPRESS' && order.status !== 'DELIVERED' && (
                         <CountdownTimer startTime={order.createdAt} />
                       )}
+                      <div className={styles.providerBadge}>
+                        {order.fulfillmentProvider === 'SHIPROCKET' ? '🚀 Shiprocket' : '🏠 Local'}
+                      </div>
                     </div>
                   </td>
                   <td>
-                    <div className={styles.providerInfo}>
-                      <span className={`${styles.providerBadge} ${styles[order.fulfillmentProvider?.toLowerCase() || 'sahu_local']}`}>
-                        {order.fulfillmentProvider === 'SHIPROCKET' ? '🚀 SHIPROCKET' : '🏠 LOCAL'}
-                      </span>
-                      {order.fulfillmentProvider === 'SAHU_LOCAL' && (
-                        <div className={styles.deliveryDetails}>
-                          {order.deliveryBoyName ? (
-                            <span className={styles.boyName}>👤 {order.deliveryBoyName}</span>
-                          ) : (
-                            <button 
-                              className={styles.assignBtn}
-                              onClick={() => handleAssign(order.id)}
-                            >
-                              Assign Boy
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`${styles.statusBadge} ${styles[order.status.toLowerCase()]}`}>
-                      {order.status}
-                    </span>
+                    <select 
+                      className={`${styles.statusBadge} ${styles[order.status.toLowerCase()]}`}
+                      value={order.status}
+                      onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
+                    >
+                      <option value="PENDING">PENDING</option>
+                      <option value="PROCESSING">PROCESSING</option>
+                      <option value="COMPLETED">COMPLETED</option>
+                      <option value="DELIVERED">DELIVERED</option>
+                      <option value="CANCELLED">CANCELLED</option>
+                    </select>
                   </td>
                   <td className={styles.actions}>
-                    {order.status === 'COMPLETED' && order.fulfillmentProvider === 'SAHU_LOCAL' && (
+                    {order.fulfillmentProvider === 'SAHU_LOCAL' && !order.deliveryBoyName && (
                       <button 
-                        className={styles.deliveredBtn}
-                        onClick={() => handleUpdateStatus(order.id, 'DELIVERED')}
+                        className={styles.assignBtn}
+                        onClick={() => handleAssign(order.id)}
                       >
-                        Mark Delivered
+                        Assign Boy
                       </button>
+                    )}
+                    {order.deliveryBoyName && (
+                      <span className={styles.boyName}>👤 {order.deliveryBoyName}</span>
                     )}
                     <button className={styles.deleteBtn} onClick={() => handleDelete(order.id)}>Delete</button>
                   </td>
