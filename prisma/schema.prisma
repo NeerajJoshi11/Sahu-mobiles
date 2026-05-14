@@ -11,6 +11,7 @@ model Product {
   id          String      @id @default(cuid())
   name        String
   price       Float
+  mrp         Float?
   description String
   image       String
   screen      String
@@ -83,5 +84,11 @@ model DeliveryBoy {
   name      String
   phone     String   @unique
   status    String   @default("AVAILABLE") // AVAILABLE, BUSY, OFFLINE
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
   createdAt DateTime @default(now())
 }

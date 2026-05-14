@@ -49,6 +49,11 @@ export function ProductCard({ product }: ProductCardProps) {
       whileTap={{ scale: 0.98 }}
     >
       <Link href={`/product/${product.id}`} className={styles.imageContainer}>
+        {product.mrp && product.mrp > product.price && (
+          <div className={styles.discountBadge}>
+            {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+          </div>
+        )}
         <div className={styles.imageWrapper}>
           <Image
             src={product.image}
@@ -65,7 +70,12 @@ export function ProductCard({ product }: ProductCardProps) {
         <Link href={`/product/${product.id}`} className={styles.titleLink}>
           <h3 className={styles.title}>{product.name}</h3>
         </Link>
-        <p className={styles.price}>₹{product.price.toLocaleString()}</p>
+        <div className={styles.priceContainer}>
+          <p className={styles.price}>₹{product.price.toLocaleString()}</p>
+          {product.mrp && product.mrp > product.price && (
+            <p className={styles.mrp}>₹{product.mrp.toLocaleString()}</p>
+          )}
+        </div>
         
         <div className={styles.specs}>
           <span className={styles.specItem}>{product.ram}</span>

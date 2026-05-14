@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Newsletter } from "./Newsletter";
 import styles from "./Footer.module.css";
 
 export function Footer() {
@@ -12,7 +13,11 @@ export function Footer() {
 
   return (
     <footer className={styles.footer}>
-      <div className={`container ${styles.footerContent}`}>
+      <div className="container">
+        <Newsletter />
+      </div>
+      
+      <div className={`container ${styles.footerContent}`} style={{ marginTop: '3rem' }}>
         <div className={styles.brandSection}>
           <h2 className={styles.brandName}>Sahu Mobiles</h2>
           <p className={styles.brandDesc}>

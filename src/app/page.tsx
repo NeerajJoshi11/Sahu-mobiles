@@ -5,6 +5,7 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductSkeleton } from "@/components/ProductSkeleton";
 import { PincodeCheckerModal } from "@/components/PincodeCheckerModal";
+import { TrustSection } from "@/components/TrustSection";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -46,7 +47,9 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <div className="container">
+        <div className={styles.heroBackground}></div>
+        <div className={styles.heroGlow}></div>
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <motion.h1 
             className={styles.heroTitle}
             initial={{ opacity: 0, y: 20 }}
@@ -182,6 +185,8 @@ export default function Home() {
           </motion.div>
         )}
       </section>
+
+      <TrustSection />
 
       <PincodeCheckerModal 
         isOpen={isPincodeModalOpen} 

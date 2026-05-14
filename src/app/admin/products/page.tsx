@@ -7,8 +7,15 @@ interface Product {
   id: string;
   name: string;
   price: number;
+  mrp?: number | null;
   stock: number;
   category: string;
+  description: string;
+  image: string;
+  screen: string;
+  processor: string;
+  ram: string;
+  storage: string;
 }
 
 export default function InventoryPage() {
@@ -16,11 +23,13 @@ export default function InventoryPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    mrp: "",
     description: "",
     image: "/images/phone1.png",
     screen: "",
@@ -50,34 +59,65 @@ export default function InventoryPage() {
     e.preventDefault();
     setErrorMsg("");
     try {
-      const res = await fetch("/api/products", {
-        method: "POST",
+      const url = editingProductId ? `/api/products/${editingProductId}` : "/api/products";
+      const method = editingProductId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
           price: parseFloat(formData.price),
+          mrp: formData.mrp ? parseFloat(formData.mrp) : null,
           stock: parseInt(formData.stock),
         }),
       });
 
       if (res.ok) {
         setIsModalOpen(false);
+        setEditingProductId(null);
         fetchProducts();
-        setFormData({
-          name: "",
-          price: "",
-          description: "",
-          image: "/images/phone1.png",
-          screen: "",
-          processor: "",
-          ram: "",
-          storage: "",
-          stock: "10",
-        });
+        resetForm();
+      } else {
+        const data = await res.json();
+        setErrorMsg(data.error || "Failed to save product.");
       }
     } catch (error) {
-      console.error("Failed to add product:", error);
+      console.error("Failed to save product:", error);
+      setErrorMsg("Network error occurred.");
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      price: "",
+      mrp: "",
+      description: "",
+      image: "/images/phone1.png",
+      screen: "",
+      processor: "",
+      ram: "",
+      storage: "",
+      stock: "10",
+    });
+  };
+
+  const handleEdit = (product: Product) => {
+    setEditingProductId(product.id);
+    setFormData({
+      name: product.name,
+      price: product.price.toString(),
+      mrp: product.mrp ? product.mrp.toString() : "",
+      description: product.description,
+      image: product.image,
+      screen: product.screen,
+      processor: product.processor,
+      ram: product.ram,
+      storage: product.storage,
+      stock: product.stock.toString(),
+    });
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -106,7 +146,11 @@ export default function InventoryPage() {
           <h1 className={styles.title}>Inventory Management</h1>
           <p className={styles.subtitle}>Manage your product catalog and stock levels.</p>
         </div>
-        <button className={`btn btn-primary`} onClick={() => setIsModalOpen(true)}>
+        <button className={`btn btn-primary`} onClick={() => {
+          setEditingProductId(null);
+          resetForm();
+          setIsModalOpen(true);
+        }}>
           + Add New Product
         </button>
       </header>
@@ -146,6 +190,9 @@ export default function InventoryPage() {
                   </td>
                   <td>
                     <div className={styles.actions}>
+                      <button className={styles.editBtn} onClick={() => handleEdit(product)} style={{ marginRight: '0.5rem', padding: '0.5rem', background: 'var(--accent)', color: 'white', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>
+                        Edit
+                      </button>
                       <button className={styles.deleteBtn} onClick={() => handleDelete(product.id)}>
                         Delete
                       </button>
@@ -162,7 +209,7 @@ export default function InventoryPage() {
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Add New Product</h2>
+              <h2 className={styles.modalTitle}>{editingProductId ? "Edit Product" : "Add New Product"}</h2>
               <div className={styles.importSection}>
                 <input 
                   type="text" 
@@ -216,7 +263,11 @@ export default function InventoryPage() {
                   <input required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Price (₹)</label>
+                  <label>MRP (₹)</label>
+                  <input type="number" placeholder="Original Price (Optional)" value={formData.mrp} onChange={(e) => setFormData({...formData, mrp: e.target.value})} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Selling Price (₹)</label>
                   <input type="number" required value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
                 </div>
               </div>

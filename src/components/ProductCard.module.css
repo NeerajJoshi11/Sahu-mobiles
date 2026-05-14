@@ -24,6 +24,20 @@
   padding: 1.5rem; /* Add breathing room around the phone */
 }
 
+.discountBadge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: #ef4444; /* Vibrant red for discount */
+  color: white;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4);
+}
+
 .imageWrapper {
   position: absolute;
   top: 1.5rem;
@@ -63,11 +77,23 @@
   color: var(--accent);
 }
 
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 .price {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--foreground);
-  margin-bottom: 1rem;
+}
+
+.mrp {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  text-decoration: line-through;
 }
 
 .specs {

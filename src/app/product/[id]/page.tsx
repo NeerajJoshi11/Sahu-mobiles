@@ -34,7 +34,26 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
         <MotionSlideIn className={styles.details} delay={0.2}>
           <h1 className={styles.title}>{product.name}</h1>
-          <p className={styles.price}>₹{product.price.toLocaleString()}</p>
+          
+          <div className={styles.pricingSection}>
+            <div className={styles.priceRow}>
+              <p className={styles.price}>₹{product.price.toLocaleString()}</p>
+              {product.mrp && product.mrp > product.price && (
+                <>
+                  <p className={styles.mrp}>₹{product.mrp.toLocaleString()}</p>
+                  <div className={styles.discountBadge}>
+                    {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                  </div>
+                </>
+              )}
+            </div>
+            {product.mrp && product.mrp > product.price && (
+              <p className={styles.savings}>
+                You save: ₹{(product.mrp - product.price).toLocaleString()}
+              </p>
+            )}
+          </div>
+
           <p className={styles.description}>{product.description}</p>
 
           <div className={styles.specs}>
