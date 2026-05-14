@@ -11,7 +11,7 @@ export default function RefundPolicy() {
         <p>You can cancel your order within 30 minutes of placement for a full refund. Once the order has been dispatched or picked up by our 2-hour delivery team, cancellation may not be possible.</p>
 
         <h2>2. Returns & Replacements</h2>
-        <p>We offer a **7-day replacement policy** for smartphones that are received in a damaged or defective condition. To be eligible for a replacement:</p>
+        <p>We offer a <strong>7-day replacement policy</strong> for smartphones that are received in a damaged or defective condition. To be eligible for a replacement:</p>
         <ul>
           <li>The item must be in its original packaging with all accessories and bill.</li>
           <li>The seal of the box must only be broken if there is a functional defect.</li>
@@ -25,7 +25,7 @@ export default function RefundPolicy() {
         <p>Once your return is received and inspected, we will notify you of the approval or rejection of your refund. If approved, your refund will be processed to your original method of payment (Razorpay) within 5-7 business days.</p>
 
         <h2>5. Warranty</h2>
-        <p>All smartphones sold on Sahu Mobiles come with a **Standard Brand Warranty**. For any hardware issues after the 7-day replacement period, customers must visit the nearest authorized service center of the respective brand (Apple, Samsung, etc.).</p>
+        <p>All smartphones sold on Sahu Mobiles come with a <strong>Standard Brand Warranty</strong>. For any hardware issues after the 7-day replacement period, customers must visit the nearest authorized service center of the respective brand (Apple, Samsung, etc.).</p>
       </div>
     </div>
   );

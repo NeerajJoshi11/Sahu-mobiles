@@ -8,15 +8,15 @@ export default function ShippingPolicy() {
       
       <div className={styles.content}>
         <h2>1. 2-Hour Express Delivery</h2>
-        <p>We take pride in our **Local 2-Hour Delivery** service in Amethi. This service is available for orders placed between 10:00 AM and 7:00 PM for eligible local pincodes. If an order is placed after hours, it will be delivered by 11:00 AM the following morning.</p>
+        <p>We take pride in our <strong>Local 2-Hour Delivery</strong> service in Amethi. This service is available for orders placed between 10:00 AM and 7:00 PM for eligible local pincodes. If an order is placed after hours, it will be delivered by 11:00 AM the following morning.</p>
 
         <h2>2. Standard Delivery</h2>
-        <p>For orders outside our express delivery zone, we partner with **Shiprocket** to provide reliable shipping across India. Standard delivery typically takes 2-5 business days depending on your location.</p>
+        <p>For orders outside our express delivery zone, we partner with <strong>Shiprocket</strong> to provide reliable shipping across India. Standard delivery typically takes 2-5 business days depending on your location.</p>
 
         <h2>3. Shipping Costs</h2>
         <ul>
-          <li>**Local Express Delivery**: FREE on orders above ₹10,000.</li>
-          <li>**Standard Shipping**: Calculated at checkout based on weight and distance.</li>
+          <li><strong>Local Express Delivery</strong>: FREE on orders above ₹10,000.</li>
+          <li><strong>Standard Shipping</strong>: Calculated at checkout based on weight and distance.</li>
         </ul>
 
         <h2>4. Order Tracking</h2>
