@@ -10,13 +10,13 @@ interface ProductCardProps {
 }
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const [isAdded, setIsAdded] = useState(false);
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: { 
       opacity: 1, 

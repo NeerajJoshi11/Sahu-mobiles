@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductSkeleton } from "@/components/ProductSkeleton";
 import { PincodeCheckerModal } from "@/components/PincodeCheckerModal";
@@ -172,7 +172,7 @@ export default function Home() {
                   staggerChildren: 0.05
                 }
               }
-            }}
+            } as Variants}
           >
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => (

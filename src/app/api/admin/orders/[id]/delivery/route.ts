@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -14,7 +14,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const { deliveryBoyName, status } = await request.json();
 
     const order = await prisma.order.update({

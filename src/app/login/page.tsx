@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "../register/page.module.css";
@@ -9,10 +9,6 @@ export default function LoginPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
-
-  useState(() => {
-    // This is just to ensure the state exists, useEffect will handle it
-  });
 
   useEffect(() => {
     setMounted(true);
