@@ -1,0 +1,53 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 6rem 1rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.lastUpdated {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.content {
+  line-height: 1.8;
+  color: var(--foreground);
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem;
+  color: #d4af37; /* Gold headings */
+}
+
+.content p {
+  margin-bottom: 1.5rem;
+  color: var(--muted-foreground);
+}
+
+.content ul {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  color: var(--muted-foreground);
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+}

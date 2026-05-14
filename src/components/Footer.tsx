@@ -32,13 +32,19 @@ export function Footer() {
               <Link href="/" className={styles.link}>Home</Link>
             </li>
             <li>
-              <Link href="/about" className={styles.link}>About Us</Link>
+              <Link href="/privacy-policy" className={styles.link}>Privacy Policy</Link>
+            </li>
+            <li>
+              <Link href="/terms-conditions" className={styles.link}>Terms & Conditions</Link>
+            </li>
+            <li>
+              <Link href="/refund-policy" className={styles.link}>Refund & Cancellation</Link>
+            </li>
+            <li>
+              <Link href="/shipping-policy" className={styles.link}>Shipping Policy</Link>
             </li>
             <li>
               <Link href="/contact" className={styles.link}>Contact Us</Link>
-            </li>
-            <li>
-              <Link href="/register" className={styles.link}>Sign In / Register</Link>
             </li>
           </ul>
         </div>
