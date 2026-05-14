@@ -19,8 +19,10 @@ export async function POST(request: Request) {
     hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
     const generated_signature = hmac.digest("hex");
 
-    // DEMO MODE BYPASS: Allow success if payment ID is "test_payment"
-    const isTestMode = razorpay_payment_id === "test_payment";
+    // DEMO MODE BYPASS: Allow success if payment ID is "test_payment" (Only in development/staging)
+    const isTestMode = 
+      process.env.NODE_ENV !== "production" && 
+      razorpay_payment_id === "test_payment";
 
     if (!isTestMode && generated_signature !== razorpay_signature) {
       return NextResponse.json(

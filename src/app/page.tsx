@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "@/components/ProductCard";
+import { ProductSkeleton } from "@/components/ProductSkeleton";
 import { PincodeCheckerModal } from "@/components/PincodeCheckerModal";
 import styles from "./page.module.css";
 
@@ -19,6 +20,8 @@ export default function Home() {
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
+        // Artificial delay for demonstration of premium skeleton
+        // await new Promise(r => setTimeout(r, 1000));
         setProducts(data);
       } catch (err) {
         console.error("Failed to fetch products:", err);
@@ -122,34 +125,60 @@ export default function Home() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              <AnimatePresence>
+                {searchQuery && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className={styles.clearButton}
+                    onClick={() => setSearchQuery("")}
+                    aria-label="Clear search"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         </div>
 
         {!mounted || loading ? (
-          <p>Loading premium phones...</p>
-        ) : filteredProducts.length === 0 ? (
-          <div className={styles.noResults}>
-            <p>No products found matching "{searchQuery}". Check back soon!</p>
+          <div className={styles.productGrid}>
+            {[...Array(8)].map((_, i) => (
+              <ProductSkeleton key={i} />
+            ))}
           </div>
+        ) : filteredProducts.length === 0 ? (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className={styles.noResults}
+          >
+            <p>No products found matching "{searchQuery}". Check back soon!</p>
+          </motion.div>
         ) : (
           <motion.div 
             className={styles.productGrid}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
+            animate="visible"
             variants={{
               hidden: {},
               visible: {
                 transition: {
-                  staggerChildren: 0.15
+                  staggerChildren: 0.05
                 }
               }
             }}
           >
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </AnimatePresence>
           </motion.div>
         )}
       </section>

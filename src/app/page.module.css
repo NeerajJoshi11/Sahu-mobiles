@@ -115,6 +115,28 @@
   box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
 }
 
+.clearButton {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.clearButton:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
 .noResults {
   text-align: center;
   padding: 4rem 0;

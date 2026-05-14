@@ -22,12 +22,8 @@ export async function POST(request: Request) {
 
     // Securely compare the hashed password
     const isPasswordValid = await bcrypt.compare(password, admin.password);
-    
-    // Fallback for initial migration: allow plain text if hashing hasn't run yet
-    // (We will hash it in the next step, but this prevents locking out the user)
-    const isPlainTextValid = admin.password === password;
 
-    if (!isPasswordValid && !isPlainTextValid) {
+    if (!isPasswordValid) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
