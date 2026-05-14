@@ -43,7 +43,14 @@ export default function CheckoutPage() {
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    // For pincode, remove any non-numeric characters (like accidental spaces on mobile)
+    if (name === "pincode") {
+      const cleanedValue = value.replace(/\D/g, "").slice(0, 6);
+      setFormData({ ...formData, [name]: cleanedValue });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleCheckout = async (e: React.FormEvent) => {
@@ -231,7 +238,9 @@ export default function CheckoutPage() {
                 <input 
                   type="text" 
                   name="pincode"
-                  placeholder="Pincode" 
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="6-digit Pincode" 
                   required 
                   className={styles.input} 
                   value={formData.pincode}

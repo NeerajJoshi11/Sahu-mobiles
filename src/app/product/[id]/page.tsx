@@ -5,6 +5,8 @@ import { AddToCartButton } from "@/components/AddToCartButton";
 import { MotionFadeIn, MotionSlideIn } from "@/components/MotionWrapper";
 import styles from "./page.module.css";
 
+import { ProductSEO } from "@/components/ProductSEO";
+
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
@@ -18,6 +20,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className={`container ${styles.page}`}>
+      <ProductSEO product={product} />
       <div className={styles.grid}>
         <MotionFadeIn className={styles.imageGallery}>
           <div className={styles.mainImageContainer}>
