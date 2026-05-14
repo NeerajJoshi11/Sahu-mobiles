@@ -1,0 +1,87 @@
+.container {
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.header {
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.subtitle {
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: #d4af37;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #d4af37;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  line-height: 1.4;
+}
+
+.saveBtn {
+  width: 100%;
+  padding: 1rem;
+}
+
+.message {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(212, 175, 55, 0.1);
+  color: #d4af37;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}

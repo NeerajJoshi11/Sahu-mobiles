@@ -1,0 +1,174 @@
+.popupContainer {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.popup {
+  width: 320px;
+  background: var(--background);
+  border: 1px solid #d4af37; /* Blended golden border */
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: var(--muted); /* Blended dark theme */
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  background: rgba(212, 175, 55, 0.1);
+  color: #d4af37;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.125rem 0;
+}
+
+.status {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.closeBtn {
+  color: var(--muted-foreground);
+  padding: 0.25rem;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeBtn:hover {
+  color: var(--foreground);
+}
+
+.body {
+  padding: 1rem;
+  background: var(--background);
+  min-height: 100px;
+}
+
+.message {
+  background: var(--muted);
+  padding: 0.75rem 1rem;
+  border-radius: 0 12px 12px 12px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.message p {
+  margin-bottom: 0.5rem;
+}
+
+.message p:last-child {
+  margin-bottom: 0;
+}
+
+.footer {
+  padding: 1rem;
+  background: var(--background);
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--border);
+}
+
+.whatsappBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.75rem;
+  background: transparent;
+  color: var(--foreground); 
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 1px solid #d4af37; /* Golden border */
+  transition: all 0.2s;
+}
+
+.whatsappBtn:hover {
+  background: rgba(212, 175, 55, 0.1); /* Subtle golden hover */
+  border-color: #ffd700;
+  color: #ffd700;
+  transform: translateY(-1px);
+}
+
+/* Floating Bubble for when dismissed */
+.floatingBubble {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  background: var(--background);
+  border: 1px solid #d4af37;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d4af37;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s, color 0.2s;
+  animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.floatingBubble:hover {
+  transform: scale(1.1);
+  border-color: #ffd700;
+  color: #ffd700;
+  box-shadow: 0 6px 25px rgba(212, 175, 55, 0.25);
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

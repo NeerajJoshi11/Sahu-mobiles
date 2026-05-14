@@ -1,0 +1,245 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.subtitle {
+  color: var(--muted-foreground);
+}
+
+.tableWrapper {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 1rem 1.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.orderId {
+  font-weight: 600;
+  font-family: monospace;
+  color: #d4af37;
+}
+
+.customerInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.customerName {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.customerEmail {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.total {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.statusBadge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pending {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted-foreground);
+}
+
+.shipped {
+  background: rgba(212, 175, 55, 0.1);
+  color: #d4af37;
+}
+
+.delivered {
+  background: rgba(37, 211, 102, 0.1);
+  color: #25d366;
+}
+
+.viewBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewBtn:hover {
+  border-color: #d4af37;
+  color: #d4af37;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.deleteBtn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deleteBtn:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.loading {
+  padding: 4rem;
+  text-align: center;
+  color: var(--muted-foreground);
+}
+
+.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  text-align: center;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.deliveryBadge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.deliveryBadge.express {
+  background: linear-gradient(135deg, #d4af37, #f1c40f);
+  color: #000;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.deliveryBadge.standard {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--muted-foreground);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.providerBadge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.providerBadge.shiprocket {
+  background: rgba(139, 92, 246, 0.1);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.providerBadge.sahu_local {
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.deliveryInfo, .providerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timer {
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.timer.late {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.assignBtn, .deliveredBtn {
+  background: #d4af37;
+  color: #000;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.assignBtn:hover, .deliveredBtn:hover {
+  background: #f1c40f;
+  transform: translateY(-1px);
+}
+
+.deliveredBtn {
+  background: #10b981;
+  color: #fff;
+  margin-right: 0.5rem;
+}
+
+.deliveredBtn:hover {
+  background: #059669;
+}
+
+.boyName {
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 500;
+}

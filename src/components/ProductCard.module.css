@@ -1,0 +1,91 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  border: 1px solid #d4af37; /* Golden line */
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  border-color: #ffd700; /* Brighter gold on hover */
+  transform: translateY(-4px);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15); /* Subtle golden glow */
+}
+
+.imageContainer {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1/1;
+  background: #ffffff; /* White background for clean product shots */
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem; /* Add breathing room around the phone */
+}
+
+.imageWrapper {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 1.5rem;
+}
+
+.image {
+  object-fit: contain; /* Ensure the whole phone is visible without cropping */
+  transition: transform 0.5s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+
+.titleLink {
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  transition: color 0.2s;
+}
+
+.titleLink:hover .title {
+  color: var(--accent);
+}
+
+.price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 1rem;
+}
+
+.specs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.specItem {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border-radius: 4px;
+}
+
+.addToCartBtn {
+  margin-top: auto;
+  width: 100%;
+}
