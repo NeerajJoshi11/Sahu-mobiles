@@ -24,6 +24,12 @@
   padding: 1.5rem; /* Add breathing room around the phone */
 }
 
+@media (max-width: 768px) {
+  .imageContainer {
+    padding: 1rem;
+  }
+}
+
 .discountBadge {
   position: absolute;
   top: 1rem;
@@ -60,6 +66,20 @@
   flex-direction: column;
   padding: 1.5rem;
   flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 1rem;
+  }
+  
+  .price {
+    font-size: 1.1rem;
+  }
 }
 
 .titleLink {

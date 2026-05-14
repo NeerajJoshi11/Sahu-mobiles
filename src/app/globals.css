@@ -16,6 +16,14 @@
 html {
   color-scheme: dark;
   height: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.875rem 1.75rem; /* Larger touch target for mobile */
+    font-size: 1rem;
+  }
 }
 
 body {

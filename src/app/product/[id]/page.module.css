@@ -128,3 +128,40 @@
 .actions {
   margin-top: auto;
 }
+
+.stickyMobileActions {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .price {
+    font-size: 1.6rem;
+  }
+  
+  .description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stickyMobileActions {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+    z-index: 100;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.4);
+  }
+  
+  .page {
+    padding-bottom: 6rem; /* Make room for sticky bar */
+  }
+}

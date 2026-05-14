@@ -86,6 +86,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           </div>
         </MotionSlideIn>
       </div>
+
+      {/* Sticky Mobile Buy Bar */}
+      <div className={styles.stickyMobileActions}>
+        <AddToCartButton product={product} />
+      </div>
     </div>
   );
 }

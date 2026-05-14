@@ -6,9 +6,15 @@
 
 .hero {
   position: relative;
-  padding: 8rem 0 6rem;
+  padding: 6rem 0 4rem;
   text-align: center;
   overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 4rem 0 3rem;
+  }
 }
 
 .heroBackground {
@@ -74,6 +80,13 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
 }
 
 .heroActions {
