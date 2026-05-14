@@ -253,7 +253,7 @@ export default function CheckoutPage() {
             <div className={styles.formGroup}>
               <h2 className={styles.sectionTitle}>Delivery Options</h2>
               <div className={styles.deliveryOptions}>
-                {expressPincodes.includes(formData.pincode) && (
+                {expressPincodes.includes(formData.pincode.trim()) && (
                   <label className={`${styles.deliveryOption} ${formData.deliveryMethod === "EXPRESS" ? styles.selected : ""}`}>
                     <input 
                       type="radio" 
