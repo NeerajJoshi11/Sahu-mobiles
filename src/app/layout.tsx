@@ -22,6 +22,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Sahu Mobiles - Premium Mobile Store",
   description: "Your one-stop destination for premium mobile phones. Find the latest smartphones with exclusive deals.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({
