@@ -1,47 +1,23 @@
-import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
-import { cookies } from "next/headers";
 
-export async function POST(request: Request) {
+async function testFetch() {
+  const url = "https://www.flipkart.com/apple-iphone-15-black-128-gb/p/itm6ac6485515ae4";
   try {
-    const cookieStore = await cookies();
-    const session = cookieStore.get("admin_session");
-
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    let { url } = await request.json();
-
-    if (!url) {
-      return NextResponse.json({ error: "URL is required" }, { status: 400 });
-    }
-
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      url = "https://" + url;
-    }
-
-    let response;
-    try {
-      response = await fetch(url, {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-          "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
-          "sec-ch-ua": "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"",
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": "\"macOS\"",
-          "sec-fetch-dest": "document",
-          "sec-fetch-mode": "navigate",
-          "sec-fetch-site": "none",
-          "sec-fetch-user": "?1",
-          "upgrade-insecure-requests": "1"
-        }
-      });
-    } catch (err: any) {
-      console.error("Network fetch failed:", err);
-      throw new Error("Could not connect to the website. Make sure the URL is correct or try again.");
-    }
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\"",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1"
+      }
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch the URL (Status: ${response.status})`);
@@ -106,7 +82,7 @@ export async function POST(request: Request) {
     price = price.replace(/[₹$,]/g, "").replace(/\..*/, "").trim();
     const numericPrice = parseFloat(price) || 0;
 
-    return NextResponse.json({
+    console.log({
       product: {
         name: name.split("|")[0].split("-")[0].trim(), // Clean up site suffix
         description: description.substring(0, 500).trim(),
@@ -118,6 +94,6 @@ export async function POST(request: Request) {
 
   } catch (error: any) {
     console.error("Import Error:", error);
-    return NextResponse.json({ error: "Failed to parse product link: " + error.message }, { status: 500 });
   }
 }
+testFetch();
