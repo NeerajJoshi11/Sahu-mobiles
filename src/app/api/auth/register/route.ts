@@ -50,9 +50,10 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("REGISTER_ERROR:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Registration failed", details: error.message },
       { status: 500 }
     );
   }
