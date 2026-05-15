@@ -40,10 +40,6 @@ export default function OrderDetailsPage({ params: paramsPromise }: { params: Pr
 
   return (
     <div className={`container ${styles.container}`}>
-      <Link href="/profile" className={styles.backLink}>
-        ← Back to Profile
-      </Link>
-      
       <header className={styles.header}>
         <h1 className={styles.title}>Order Details</h1>
         <p className={styles.subtitle}>Order ID: #{order.id.toUpperCase()}</p>
@@ -56,12 +52,22 @@ export default function OrderDetailsPage({ params: paramsPromise }: { params: Pr
             <div className={styles.itemsList}>
               {order.items?.map((item: any) => (
                 <div key={item.id} className={styles.item}>
-                  <div className={styles.itemInfo}>
-                    <span className={styles.itemName}>{item.product?.name || "Product"}</span>
-                    <span className={styles.itemMeta}>
-                      {item.selectedColor && `Color: ${item.selectedColor}`}
-                      {item.selectedVariant && ` | ${item.selectedVariant}`}
-                    </span>
+                  <div className={styles.itemMain}>
+                    <div className={styles.itemImage}>
+                      <Image 
+                        src={item.product?.image || "/placeholder.png"} 
+                        alt={item.product?.name || "Product"} 
+                        fill 
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                    <div className={styles.itemInfo}>
+                      <span className={styles.itemName}>{item.product?.name || "Product"}</span>
+                      <span className={styles.itemMeta}>
+                        {item.selectedColor && `Color: ${item.selectedColor}`}
+                        {item.selectedVariant && ` | ${item.selectedVariant}`}
+                      </span>
+                    </div>
                   </div>
                   <div className={styles.itemPrice}>
                     <span>{item.quantity} x ₹{item.price.toLocaleString()}</span>
@@ -70,9 +76,19 @@ export default function OrderDetailsPage({ params: paramsPromise }: { params: Pr
                 </div>
               ))}
             </div>
-            <div className={styles.totalRow}>
-              <span>Grand Total</span>
-              <strong>₹{order.total.toLocaleString()}</strong>
+            <div className={styles.summary}>
+              <div className={styles.summaryRow}>
+                <span>Subtotal</span>
+                <span>₹{order.total.toLocaleString()}</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Shipping</span>
+                <span>FREE</span>
+              </div>
+              <div className={styles.totalRow}>
+                <span>Grand Total</span>
+                <strong>₹{order.total.toLocaleString()}</strong>
+              </div>
             </div>
           </section>
         </div>
@@ -100,12 +116,19 @@ export default function OrderDetailsPage({ params: paramsPromise }: { params: Pr
           </section>
 
           <section className={styles.card}>
-            <h2 className={styles.cardTitle}>Shipping Address</h2>
+            <h2 className={styles.cardTitle}>Customer Details</h2>
             <div className={styles.address}>
               <strong>{order.customerName}</strong>
+              <p>{order.customerEmail}</p>
+              <p>+91 {order.customerPhone}</p>
+            </div>
+          </section>
+
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>Shipping Address</h2>
+            <div className={styles.address}>
               <p>{order.address}</p>
               <p>Pincode: {order.pincode}</p>
-              <p>Phone: +91 {order.customerPhone}</p>
             </div>
           </section>
         </div>
