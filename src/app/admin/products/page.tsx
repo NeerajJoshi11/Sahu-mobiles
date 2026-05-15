@@ -42,6 +42,8 @@ export default function InventoryPage() {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<Product | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -200,6 +202,7 @@ export default function InventoryPage() {
   };
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true);
     setErrorMsg("");
     
     try {
@@ -211,10 +214,13 @@ export default function InventoryPage() {
         return;
       }
       
+      setShowDeleteModal(null);
       fetchProducts();
     } catch (error) {
       console.error("Failed to delete product:", error);
       setErrorMsg("Network error occurred while trying to delete the product.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -306,7 +312,7 @@ export default function InventoryPage() {
                       <button className={styles.duplicateBtn} onClick={() => handleDuplicate(product)} style={{ marginRight: '0.5rem', padding: '0.5rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent)', borderRadius: '4px', border: '1px solid var(--accent)', cursor: 'pointer' }}>
                         + Color
                       </button>
-                      <button className={styles.deleteBtn} onClick={() => handleDelete(product.id)}>
+                      <button className={styles.deleteBtn} onClick={() => setShowDeleteModal(product)}>
                         Delete
                       </button>
                     </div>
@@ -552,6 +558,36 @@ export default function InventoryPage() {
           onClose={() => setIsBulkModalOpen(false)} 
           onSuccess={() => fetchProducts()} 
         />
+      )}
+
+      {showDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={`${styles.modal} ${styles.deleteModal}`}>
+            <div className={styles.deleteIcon}>⚠️</div>
+            <h2 className={styles.modalTitle}>Delete Product?</h2>
+            <p className={styles.modalSubtitle}>
+              Are you sure you want to delete <strong>{showDeleteModal.name}</strong>? 
+              This will remove it from the store permanently.
+            </p>
+            <div className={styles.modalActions}>
+              <button 
+                className="btn btn-outline" 
+                style={{ flex: 1 }}
+                onClick={() => setShowDeleteModal(null)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button 
+                className={styles.confirmDeleteBtn} 
+                onClick={() => handleDelete(showDeleteModal.id)}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Permanently"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
