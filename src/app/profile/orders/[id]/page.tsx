@@ -6,10 +6,12 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
 
-export default function OrderDetailsPage() {
-  const params = useParams();
+import { use } from "react";
+
+export default function OrderDetailsPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
+  const params = use(paramsPromise);
   const router = useRouter();
-  const orderId = params.id as string;
+  const orderId = params.id;
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
