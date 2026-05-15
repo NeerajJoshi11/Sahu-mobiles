@@ -21,6 +21,26 @@ export async function POST(request: Request) {
       url = "https://" + url;
     }
 
+    const extractSlugName = (u: string) => {
+      try {
+        const parsed = new URL(u);
+        const path = parsed.pathname;
+        let slug = "";
+        if (parsed.hostname.includes("flipkart.com")) {
+          const match = path.match(/^\/([^/]+)\/p\//);
+          if (match) slug = match[1];
+        } else if (parsed.hostname.includes("amazon")) {
+          const match = path.match(/^\/([^/]+)\/dp\//);
+          if (match) slug = match[1];
+        }
+        if (slug) {
+          return slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+      } catch (e) {}
+      return "";
+    };
+
+    let fetchFailed = false;
     let response;
     try {
       response = await fetch(url, {
@@ -39,13 +59,23 @@ export async function POST(request: Request) {
           "upgrade-insecure-requests": "1"
         }
       });
+      if (!response.ok) fetchFailed = true;
     } catch (err: any) {
       console.error("Network fetch failed:", err);
-      throw new Error("Could not connect to the website. Make sure the URL is correct or try again.");
+      fetchFailed = true;
     }
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch the URL (Status: ${response.status})`);
+    if (fetchFailed || !response) {
+      const fallbackName = extractSlugName(url) || "Unknown Product";
+      return NextResponse.json({
+        product: {
+          name: fallbackName,
+          description: "",
+          price: 0,
+          image: "",
+          category: "Smartphone"
+        }
+      });
     }
 
     const html = await response.text();
