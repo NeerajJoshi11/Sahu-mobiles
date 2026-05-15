@@ -52,48 +52,12 @@ export default function Home() {
           muted 
           loop 
           playsInline 
+          preload="auto"
           className={styles.heroVideo}
-          poster="/images/phone1.png"
         >
           <source src="/appearance.webm" type="video/webm" />
           Your browser does not support the video tag.
         </video>
-        <div className={styles.heroOverlay}></div>
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <motion.h1 
-            className={styles.heroTitle}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Premium Phones, Unbeatable Prices.
-          </motion.h1>
-          <motion.p 
-            className={styles.heroSubtitle}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            Browse our curated collection of the latest smartphones with exclusive deals and fast delivery.
-          </motion.p>
-          <motion.div 
-            className={styles.heroActions}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <button 
-              className={`btn btn-outline ${styles.checkDeliveryBtn}`}
-              onClick={() => setIsPincodeModalOpen(true)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-              Check Delivery Availability
-            </button>
-          </motion.div>
-        </div>
       </motion.section>
 
       <section className={`container ${styles.productSection}`}>
