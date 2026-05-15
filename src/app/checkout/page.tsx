@@ -14,7 +14,8 @@ declare global {
 }
 
 export default function CheckoutPage() {
-  const { items, cartTotal, clearCart } = useCart();
+  const { items, cartTotal, clearCart, discountAmount, appliedCoupon } = useCart();
+  const finalTotal = cartTotal - discountAmount;
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
@@ -30,6 +31,7 @@ export default function CheckoutPage() {
     deliveryMethod: "STANDARD",
   });
 
+  const [paymentMethod, setPaymentMethod] = useState("WHATSAPP"); // WHATSAPP or COD
   const [expressPincodes, setExpressPincodes] = useState<string[]>([]);
 
   useEffect(() => {
@@ -44,7 +46,6 @@ export default function CheckoutPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // For pincode, remove any non-numeric characters (like accidental spaces on mobile)
     if (name === "pincode") {
       const cleanedValue = value.replace(/\D/g, "").slice(0, 6);
       setFormData({ ...formData, [name]: cleanedValue });
@@ -55,96 +56,65 @@ export default function CheckoutPage() {
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Strict Validation Check
+    const requiredFields = ["email", "firstName", "lastName", "address", "city", "state", "pincode", "phone"];
+    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
+    
+    if (missingFields.length > 0) {
+      setError(`Please fill in all required fields: ${missingFields.join(", ")}`);
+      return;
+    }
+
+    if (formData.phone.length < 10) {
+      setError("Please enter a valid 10-digit phone number");
+      return;
+    }
+
+    if (formData.pincode.length < 6) {
+      setError("Please enter a valid 6-digit pincode");
+      return;
+    }
+
     setIsProcessing(true);
     setError("");
 
     try {
-      // 1. Create order on server
-      const orderRes = await fetch("/api/checkout/razorpay", {
+      // 1. Create order on server via manual payment endpoint
+      const orderRes = await fetch("/api/checkout/manual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: cartTotal }),
+        body: JSON.stringify({
+          ...formData,
+          paymentMethod,
+          total: finalTotal,
+          items: items.map(i => ({ 
+            id: i.id, 
+            name: i.name, 
+            price: i.price, 
+            quantity: i.quantity,
+            selectedColor: i.selectedColor,
+            selectedVariant: i.selectedVariant
+          }))
+        }),
       });
 
       const orderData = await orderRes.json();
 
-      if (!orderRes.ok) {
-        // FALLBACK FOR TEST VERSION: If Razorpay API fails (likely due to missing keys)
-        // we simulate a successful payment for testing purposes.
-        console.log("Razorpay keys missing or API failed. Entering Demo Mode.");
+      if (!orderRes.ok) throw new Error(orderData.error || "Failed to place order");
+
+      if (paymentMethod === "WHATSAPP") {
+        // Redirect to WhatsApp
+        const message = `Hello Sahu Mobiles, I just placed an order!\n\n*Order ID:* ${orderData.orderId}\n*Total:* ₹${finalTotal.toLocaleString()}\n*Items:* ${items.map(i => `${i.name} (x${i.quantity})`).join(", ")}\n\nPlease send me the payment link. Thank you!`;
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/919792967002?text=${encodedMessage}`;
         
-        // Simulate a short delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        const verifyRes = await fetch("/api/checkout/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            razorpay_order_id: "test_order_" + Date.now(),
-            razorpay_payment_id: "test_payment",
-            razorpay_signature: "test_sig",
-            orderDetails: {
-              ...formData,
-              total: cartTotal,
-              items: items.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity }))
-            }
-          }),
-        });
-
-        if (verifyRes.ok) {
-          clearCart();
-          router.push("/success");
-          return;
-        }
-        throw new Error("Demo Mode failed");
+        // Open WhatsApp in new tab and then go to success page
+        window.open(whatsappUrl, "_blank");
       }
 
-      // 2. Open Razorpay Checkout
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder",
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "Sahu Mobiles",
-        description: "Premium Smartphone Purchase",
-        order_id: orderData.id,
-        handler: async function (response: any) {
-          // 3. Verify payment on server
-          const verifyRes = await fetch("/api/checkout/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              orderDetails: {
-                ...formData,
-                total: cartTotal,
-                items: items.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity }))
-              }
-            }),
-          });
-
-          const verifyData = await verifyRes.json();
-
-          if (verifyRes.ok) {
-            clearCart();
-            router.push("/success");
-          } else {
-            setError(verifyData.error || "Payment verification failed");
-            setIsProcessing(false);
-          }
-        },
-        prefill: {
-          name: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
-        },
-        theme: {
-          color: "#d4af37",
-        },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      clearCart();
+      router.push("/success");
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
       setIsProcessing(false);
@@ -260,6 +230,38 @@ export default function CheckoutPage() {
             </div>
 
             <div className={styles.formGroup}>
+              <h2 className={styles.sectionTitle}>Payment Method</h2>
+              <div className={styles.deliveryOptions}>
+                <label className={`${styles.deliveryOption} ${paymentMethod === "WHATSAPP" ? styles.selected : ""}`}>
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    value="WHATSAPP" 
+                    checked={paymentMethod === "WHATSAPP"}
+                    onChange={() => setPaymentMethod("WHATSAPP")}
+                  />
+                  <div className={styles.optionContent}>
+                    <span className={styles.optionName}>📱 Pay via WhatsApp Link</span>
+                    <span className={styles.optionDesc}>Get payment link in your DM</span>
+                  </div>
+                </label>
+                <label className={`${styles.deliveryOption} ${paymentMethod === "COD" ? styles.selected : ""}`}>
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    value="COD" 
+                    checked={paymentMethod === "COD"}
+                    onChange={() => setPaymentMethod("COD")}
+                  />
+                  <div className={styles.optionContent}>
+                    <span className={styles.optionName}>💵 Cash on Delivery</span>
+                    <span className={styles.optionDesc}>Pay when you receive your phone</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
               <h2 className={styles.sectionTitle}>Delivery Options</h2>
               <div className={styles.deliveryOptions}>
                 {expressPincodes.includes(formData.pincode.trim()) && (
@@ -273,7 +275,7 @@ export default function CheckoutPage() {
                     />
                     <div className={styles.optionContent}>
                       <span className={styles.optionName}>⚡ 2 Hour Delivery</span>
-                      <span className={styles.optionDesc}>Available in your area! (Kanpur Local)</span>
+                      <span className={styles.optionDesc}>Available in your area! (Amethi Local)</span>
                     </div>
                   </label>
                 )}
@@ -298,7 +300,7 @@ export default function CheckoutPage() {
               className={`btn btn-primary ${styles.submitBtn}`}
               disabled={isProcessing}
             >
-              {isProcessing ? "Opening Secure Payment..." : `Proceed to Pay ₹${cartTotal.toLocaleString()}`}
+              {isProcessing ? "Opening Secure Payment..." : `Proceed to Pay ₹${finalTotal.toLocaleString()}`}
             </button>
           </form>
         </div>
@@ -329,9 +331,15 @@ export default function CheckoutPage() {
                 <span>Shipping</span>
                 <span>Free</span>
               </div>
+              {discountAmount > 0 && (
+                <div className={`${styles.totalRow} ${styles.discountRow}`}>
+                  <span>Discount ({appliedCoupon})</span>
+                  <span>-₹{discountAmount.toLocaleString()}</span>
+                </div>
+              )}
               <div className={`${styles.totalRow} ${styles.grandTotal}`}>
                 <span>Total</span>
-                <span>₹{cartTotal.toLocaleString()}</span>
+                <span>₹{finalTotal.toLocaleString()}</span>
               </div>
             </div>
           </div>

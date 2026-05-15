@@ -6,13 +6,15 @@
 
 .sidebar {
   width: 260px;
-  background: var(--muted);
+  background: rgba(20, 20, 20, 0.4);
+  backdrop-filter: blur(12px);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   position: sticky;
   top: 0;
   height: 100vh;
+  z-index: 100;
 }
 
 .sidebarHeader {
@@ -37,7 +39,7 @@
 }
 
 .nav {
-  padding: 2rem 0;
+  padding: 2rem 1rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -45,18 +47,26 @@
 }
 
 .navLink {
-  padding: 0.75rem 2rem;
+  padding: 0.85rem 1.25rem;
   display: flex;
   align-items: center;
   gap: 1rem;
   color: var(--muted-foreground);
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
+  border-radius: 12px;
 }
 
 .navLink:hover {
   background: rgba(212, 175, 55, 0.05);
   color: #d4af37;
+  transform: translateX(4px);
+}
+
+.active {
+  background: rgba(212, 175, 55, 0.1) !important;
+  color: #d4af37 !important;
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2);
 }
 
 .sidebarFooter {

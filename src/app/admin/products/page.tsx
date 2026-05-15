@@ -2,6 +2,18 @@
 
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
+import { BulkImportModal } from "@/components/BulkImportModal";
+
+interface Variant {
+  ram: string;
+  storage: string;
+  colorName: string;
+  colorCode: string;
+  image: string;
+  price: string;
+  mrp: string;
+  stock: string;
+}
 
 interface Product {
   id: string;
@@ -16,12 +28,18 @@ interface Product {
   processor: string;
   ram: string;
   storage: string;
+  modelId?: string | null;
+  colorName?: string | null;
+  colorCode?: string | null;
+  hasVariants: boolean;
+  variants: Variant[];
 }
 
 export default function InventoryPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
 
@@ -37,6 +55,12 @@ export default function InventoryPage() {
     ram: "",
     storage: "",
     stock: "10",
+    modelId: "",
+    colorName: "",
+    colorCode: "#000000",
+    image: "",
+    hasVariants: false,
+    variants: [] as Variant[],
   });
 
   useEffect(() => {
@@ -70,6 +94,12 @@ export default function InventoryPage() {
           price: parseFloat(formData.price),
           mrp: formData.mrp ? parseFloat(formData.mrp) : null,
           stock: parseInt(formData.stock),
+          variants: formData.hasVariants ? formData.variants.map(v => ({
+            ...v,
+            price: parseFloat(v.price),
+            mrp: v.mrp ? parseFloat(v.mrp) : null,
+            stock: parseInt(v.stock)
+          })) : []
         }),
       });
 
@@ -100,6 +130,12 @@ export default function InventoryPage() {
       ram: "",
       storage: "",
       stock: "10",
+      modelId: "",
+      colorName: "",
+      colorCode: "#000000",
+      image: "",
+      hasVariants: false,
+      variants: [] as Variant[],
     });
   };
 
@@ -116,6 +152,51 @@ export default function InventoryPage() {
       ram: product.ram,
       storage: product.storage,
       stock: product.stock.toString(),
+      modelId: product.modelId || "",
+      colorName: product.colorName || "",
+      colorCode: product.colorCode || "#000000",
+      hasVariants: product.hasVariants || false,
+      variants: product.variants?.map(v => ({
+        ram: v.ram,
+        storage: v.storage,
+        colorName: v.colorName || "",
+        colorCode: v.colorCode || "#000000",
+        image: v.image || "",
+        price: v.price.toString(),
+        mrp: v.mrp ? v.mrp.toString() : "",
+        stock: v.stock.toString(),
+      })) || [],
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDuplicate = (product: Product) => {
+    setEditingProductId(null);
+    setFormData({
+      name: product.name,
+      price: product.price.toString(),
+      mrp: product.mrp ? product.mrp.toString() : "",
+      description: product.description,
+      image: product.image,
+      screen: product.screen,
+      processor: product.processor,
+      ram: product.ram,
+      storage: product.storage,
+      stock: product.stock.toString(),
+      modelId: product.modelId || "",
+      colorName: "", // Clear color to force new one
+      colorCode: "#000000",
+      hasVariants: product.hasVariants || false,
+      variants: product.variants?.map(v => ({
+        ram: v.ram,
+        storage: v.storage,
+        colorName: v.colorName || "",
+        colorCode: v.colorCode || "#000000",
+        image: v.image || "",
+        price: v.price.toString(),
+        mrp: v.mrp ? v.mrp.toString() : "",
+        stock: v.stock.toString(),
+      })) || [],
     });
     setIsModalOpen(true);
   };
@@ -146,13 +227,22 @@ export default function InventoryPage() {
           <h1 className={styles.title}>Inventory Management</h1>
           <p className={styles.subtitle}>Manage your product catalog and stock levels.</p>
         </div>
-        <button className={`btn btn-primary`} onClick={() => {
-          setEditingProductId(null);
-          resetForm();
-          setIsModalOpen(true);
-        }}>
-          + Add New Product
-        </button>
+        <div className={styles.headerActions}>
+          <button 
+            className="btn btn-outline" 
+            style={{ marginRight: "1rem" }}
+            onClick={() => setIsBulkModalOpen(true)}
+          >
+            📊 Bulk Import
+          </button>
+          <button className={`btn btn-primary`} onClick={() => {
+            setEditingProductId(null);
+            resetForm();
+            setIsModalOpen(true);
+          }}>
+            + Add New Product
+          </button>
+        </div>
       </header>
 
       {errorMsg && (
@@ -167,8 +257,10 @@ export default function InventoryPage() {
             <tr>
               <th>Product Name</th>
               <th>Category</th>
+              <th>Color</th>
               <th>Price</th>
               <th>Stock</th>
+              <th>Variants</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -182,6 +274,17 @@ export default function InventoryPage() {
                 <tr key={product.id}>
                   <td className={styles.productName}>{product.name}</td>
                   <td>{product.category}</td>
+                  <td>
+                    <div className={styles.colorCell}>
+                      {product.colorCode && (
+                        <div 
+                          className={styles.colorSwatch} 
+                          style={{ backgroundColor: product.colorCode }} 
+                        />
+                      )}
+                      <span>{product.colorName || "N/A"}</span>
+                    </div>
+                  </td>
                   <td>₹{product.price.toLocaleString()}</td>
                   <td>
                     <span className={product.stock > 5 ? styles.stockOk : styles.stockLow}>
@@ -189,9 +292,21 @@ export default function InventoryPage() {
                     </span>
                   </td>
                   <td>
+                    {product.variants && product.variants.length > 0 ? (
+                      <span className={styles.variantBadge}>
+                        {product.variants.length} Variants
+                      </span>
+                    ) : (
+                      <span style={{ color: "var(--muted-foreground)", fontSize: "0.8rem" }}>Single</span>
+                    )}
+                  </td>
+                  <td>
                     <div className={styles.actions}>
                       <button className={styles.editBtn} onClick={() => handleEdit(product)} style={{ marginRight: '0.5rem', padding: '0.5rem', background: 'var(--accent)', color: 'white', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>
                         Edit
+                      </button>
+                      <button className={styles.duplicateBtn} onClick={() => handleDuplicate(product)} style={{ marginRight: '0.5rem', padding: '0.5rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent)', borderRadius: '4px', border: '1px solid var(--accent)', cursor: 'pointer' }}>
+                        + Color
                       </button>
                       <button className={styles.deleteBtn} onClick={() => handleDelete(product.id)}>
                         Delete
@@ -305,14 +420,126 @@ export default function InventoryPage() {
 
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Storage</label>
-                  <input required value={formData.storage} onChange={(e) => setFormData({...formData, storage: e.target.value})} />
+                  <label>Model ID (Group ID)</label>
+                  <input 
+                    placeholder="e.g., apple-iphone-15-pro" 
+                    value={formData.modelId} 
+                    onChange={(e) => setFormData({...formData, modelId: e.target.value})} 
+                  />
+                  <small style={{ color: "var(--muted-foreground)", fontSize: "0.7rem" }}>Used to link different colors of the same model.</small>
                 </div>
-                <div className={styles.formGroup}>
-                  <label>Screen Size</label>
-                  <input required value={formData.screen} onChange={(e) => setFormData({...formData, screen: e.target.value})} />
+                <div className={styles.formRow} style={{ gridTemplateColumns: "2fr 1fr" }}>
+                  <div className={styles.formGroup}>
+                    <label>Color Name</label>
+                    <input 
+                      placeholder="e.g., Deep Purple" 
+                      value={formData.colorName} 
+                      onChange={(e) => setFormData({...formData, colorName: e.target.value})} 
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Color Hex</label>
+                    <input 
+                      type="color" 
+                      value={formData.colorCode} 
+                      onChange={(e) => setFormData({...formData, colorCode: e.target.value})} 
+                    />
+                  </div>
                 </div>
               </div>
+
+              <div className={styles.formGroup} style={{ marginTop: "1rem" }}>
+                <label className={styles.checkboxLabel}>
+                  <input 
+                    type="checkbox" 
+                    checked={formData.hasVariants} 
+                    onChange={(e) => setFormData({...formData, hasVariants: e.target.checked})} 
+                  />
+                  This product has multiple variants (RAM/Storage/Price)
+                </label>
+              </div>
+
+              {formData.hasVariants && (
+                <div className={styles.variantsSection}>
+                  <div className={styles.variantsHeader}>
+                    <h3 className={styles.sectionTitle}>Product Variants</h3>
+                    <button type="button" className={styles.addVariantBtn} onClick={() => {
+                      setFormData({
+                        ...formData,
+                        variants: [...formData.variants, { ram: "", storage: "", colorName: "", colorCode: "#000000", image: "", price: "", mrp: "", stock: "10" }]
+                      });
+                    }}>
+                      + Add Variant
+                    </button>
+                  </div>
+                  
+                  {formData.variants.map((variant, index) => {
+                    const discount = variant.mrp && variant.price ? 
+                      Math.round(((parseFloat(variant.mrp) - parseFloat(variant.price)) / parseFloat(variant.mrp)) * 100) : 0;
+
+                    return (
+                      <div key={index} className={styles.variantRow}>
+                        <div className={styles.variantInputs}>
+                          <input placeholder="Color" value={variant.colorName} onChange={(e) => {
+                            const newVariants = [...formData.variants];
+                            newVariants[index].colorName = e.target.value;
+                            setFormData({...formData, variants: newVariants});
+                          }} />
+                          <input type="color" value={variant.colorCode} onChange={(e) => {
+                            const newVariants = [...formData.variants];
+                            newVariants[index].colorCode = e.target.value;
+                            setFormData({...formData, variants: newVariants});
+                          }} className={styles.variantColorPicker} />
+                          <input placeholder="RAM" value={variant.ram} onChange={(e) => {
+                            const newVariants = [...formData.variants];
+                            newVariants[index].ram = e.target.value;
+                            setFormData({...formData, variants: newVariants});
+                          }} />
+                          <input placeholder="Storage" value={variant.storage} onChange={(e) => {
+                            const newVariants = [...formData.variants];
+                            newVariants[index].storage = e.target.value;
+                            setFormData({...formData, variants: newVariants});
+                          }} />
+                          <input placeholder="Variant Image URL" value={variant.image} onChange={(e) => {
+                            const newVariants = [...formData.variants];
+                            newVariants[index].image = e.target.value;
+                            setFormData({...formData, variants: newVariants});
+                          }} />
+                          <div className={styles.variantImagePreview}>
+                            {variant.image ? (
+                              <img src={variant.image} alt="V" />
+                            ) : (
+                              <div className={styles.noImagePlaceholder}>No Img</div>
+                            )}
+                          </div>
+                          <input type="number" placeholder="MRP" value={variant.mrp} onChange={(e) => {
+                            const newVariants = [...formData.variants];
+                            newVariants[index].mrp = e.target.value;
+                            setFormData({...formData, variants: newVariants});
+                          }} />
+                          <div className={styles.priceWithDiscount}>
+                            <input type="number" placeholder="Price" value={variant.price} onChange={(e) => {
+                              const newVariants = [...formData.variants];
+                              newVariants[index].price = e.target.value;
+                              setFormData({...formData, variants: newVariants});
+                            }} />
+                            {discount > 0 && <span className={styles.discountBadge}>{discount}%</span>}
+                          </div>
+                          <input type="number" placeholder="Stock" value={variant.stock} onChange={(e) => {
+                            const newVariants = [...formData.variants];
+                            newVariants[index].stock = e.target.value;
+                            setFormData({...formData, variants: newVariants});
+                          }} />
+                        </div>
+                        <button type="button" className={styles.removeBtn} onClick={() => {
+                          const newVariants = formData.variants.filter((_, i) => i !== index);
+                          setFormData({...formData, variants: newVariants});
+                        }}>×</button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
 
               <div className={styles.modalActions}>
                 <button type="button" className="btn btn-outline" onClick={() => setIsModalOpen(false)}>Cancel</button>
@@ -321,6 +548,12 @@ export default function InventoryPage() {
             </form>
           </div>
         </div>
+      )}
+      {isBulkModalOpen && (
+        <BulkImportModal 
+          onClose={() => setIsBulkModalOpen(false)} 
+          onSuccess={() => fetchProducts()} 
+        />
       )}
     </div>
   );

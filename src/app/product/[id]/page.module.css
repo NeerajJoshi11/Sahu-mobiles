@@ -41,47 +41,7 @@
 .title {
   font-size: 2.5rem;
   font-weight: 800;
-  margin-bottom: 0.5rem;
-}
-
-.pricingSection {
   margin-bottom: 2rem;
-}
-
-.priceRow {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.5rem;
-}
-
-.price {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--foreground);
-}
-
-.mrp {
-  font-size: 1.25rem;
-  color: var(--muted-foreground);
-  text-decoration: line-through;
-}
-
-.discountBadge {
-  background: #ef4444; /* Vibrant red */
-  color: white;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4);
-}
-
-.savings {
-  font-size: 0.95rem;
-  color: #10b981; /* Success green */
-  font-weight: 500;
 }
 
 .description {
@@ -124,10 +84,6 @@
   font-weight: 500;
 }
 
-.actions {
-  margin-top: auto;
-}
-
 .stickyMobileActions {
   display: none;
 }
@@ -137,15 +93,6 @@
     font-size: 1.8rem;
   }
   
-  .price {
-    font-size: 1.6rem;
-  }
-  
-  .description {
-    font-size: 1rem;
-    margin-bottom: 2rem;
-  }
-
   .stickyMobileActions {
     display: block;
     position: fixed;
@@ -161,7 +108,7 @@
   }
   
   .page {
-    padding-bottom: 6rem; /* Make room for sticky bar */
+    padding-bottom: 6rem;
   }
 
   .imageGallery {

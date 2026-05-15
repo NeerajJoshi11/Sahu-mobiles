@@ -8,21 +8,40 @@ datasource db {
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  name        String
-  price       Float
-  mrp         Float?
-  description String
-  image       String
-  screen      String
-  processor   String
-  ram         String
-  storage     String
-  category    String      @default("Smartphone")
-  stock       Int         @default(10)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  orderItems  OrderItem[]
+  id            String           @id @default(cuid())
+  name          String
+  price         Float
+  mrp           Float?
+  description   String
+  image         String
+  screen        String
+  processor     String
+  ram           String           // Base RAM
+  storage       String           // Base Storage
+  category      String           @default("Smartphone")
+  stock         Int              @default(10)
+  modelId       String?          // To group different colors of the same model
+  colorName     String?          // e.g., "Cosmic Grey"
+  colorCode     String?          // e.g., "#808080"
+  hasVariants   Boolean          @default(false)
+  variants      ProductVariant[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  orderItems    OrderItem[]
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  ram       String
+  storage   String
+  colorName String?
+  colorCode String?
+  image     String? // New field for color-specific images
+  price     Float
+  mrp       Float?
+  stock     Int     @default(10)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Order {
@@ -35,6 +54,8 @@ model Order {
   pincode       String
   total         Float
   status        String      @default("PENDING")
+  paymentMethod String      @default("ONLINE") // ONLINE, COD, WHATSAPP
+  paymentStatus String      @default("PENDING") // PENDING, COMPLETED, COD
   deliveryMethod String     @default("STANDARD")
   fulfillmentProvider String @default("SAHU_LOCAL")
   deliveryBoyName String?
@@ -46,13 +67,15 @@ model Order {
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
-  productId String
-  quantity  Int
-  price     Float
-  product   Product @relation(fields: [productId], references: [id])
-  order     Order   @relation(fields: [orderId], references: [id])
+  id              String  @id @default(cuid())
+  orderId         String
+  productId       String
+  quantity        Int
+  price           Float
+  selectedColor   String?
+  selectedVariant String? // E.g., "8GB / 128GB"
+  product         Product @relation(fields: [productId], references: [id])
+  order           Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model Admin {
@@ -91,4 +114,16 @@ model NewsletterSubscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  type        String   @default("PERCENTAGE") // PERCENTAGE or FLAT
+  value       Float
+  minAmount   Float    @default(0)
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

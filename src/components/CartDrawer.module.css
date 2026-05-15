@@ -121,6 +121,12 @@
   margin-bottom: 0.25rem;
 }
 
+.itemOption {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin-bottom: 0.15rem;
+}
+
 .itemPrice {
   font-weight: 600;
   color: var(--muted-foreground);
@@ -167,21 +173,127 @@
   color: var(--foreground);
 }
 
+.couponSection {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+  background: rgba(var(--primary-rgb), 0.03);
+}
+
+.couponHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--foreground);
+}
+
+.couponInputGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.couponInput {
+  flex: 1;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  color: var(--foreground);
+}
+
+.couponApplyBtn {
+  background: var(--foreground);
+  color: var(--background);
+  border: none;
+  border-radius: 6px;
+  padding: 0 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.couponApplyBtn:hover {
+  opacity: 0.9;
+}
+
+.activeCoupon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--background);
+  padding: 8px 12px;
+  border: 1px dashed var(--primary);
+  border-radius: 6px;
+}
+
+.couponBadge {
+  background: var(--primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.couponSuccess {
+  font-size: 0.85rem;
+  color: #10b981;
+  font-weight: 500;
+  flex: 1;
+}
+
+.removeCouponBtn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.couponMessage {
+  margin-top: 8px;
+  font-size: 0.8rem;
+}
+
+.couponMessage.error { color: #ef4444; }
+.couponMessage.success { color: #10b981; }
+
 .footer {
   padding: 1.5rem;
   border-top: 1px solid var(--border);
   background: var(--background);
 }
 
-.totalContainer {
+.totalRow {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: var(--muted-foreground);
+}
+
+.discountRow {
+  color: #10b981;
+}
+
+.grandTotal {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
   margin-bottom: 1.5rem;
-  font-size: 1.125rem;
-  font-weight: 600;
 }
 
 .checkoutBtn {
   width: 100%;
+  display: block;
+  text-align: center;
+  padding: 1rem;
 }

@@ -151,6 +151,10 @@
   color: var(--muted-foreground);
 }
 
+.discountRow {
+  color: #10b981;
+}
+
 .grandTotal {
   color: var(--foreground);
   font-size: 1.25rem;

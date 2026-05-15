@@ -107,7 +107,15 @@
 .price {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--foreground);
+  color: #d4af37;
+}
+
+.startsFrom {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-weight: 400;
+  display: block;
+  margin-bottom: -0.25rem;
 }
 
 .mrp {

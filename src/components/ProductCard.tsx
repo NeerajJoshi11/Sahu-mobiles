@@ -11,10 +11,10 @@ interface ProductCardProps {
 
 import { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
+import { QuickSelectModal } from "./QuickSelectModal";
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addToCart } = useCart();
-  const [isAdded, setIsAdded] = useState(false);
+  const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
 
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30, scale: 0.95 },
@@ -32,9 +32,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    addToCart(product);
-    setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 2000);
+    setIsQuickSelectOpen(true);
   };
 
   return (
@@ -71,7 +69,10 @@ export function ProductCard({ product }: ProductCardProps) {
           <h3 className={styles.title}>{product.name}</h3>
         </Link>
         <div className={styles.priceContainer}>
-          <p className={styles.price}>₹{product.price.toLocaleString()}</p>
+          <p className={styles.price}>
+            {product.hasVariants && <span className={styles.startsFrom}>Starts from </span>}
+            ₹{product.price.toLocaleString()}
+          </p>
           {product.mrp && product.mrp > product.price && (
             <p className={styles.mrp}>₹{product.mrp.toLocaleString()}</p>
           )}
@@ -83,37 +84,19 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         
         <motion.button 
-          className={`btn ${isAdded ? 'btn-success' : 'btn-primary'} ${styles.addToCartBtn}`}
+          className={`btn btn-primary ${styles.addToCartBtn}`}
           onClick={handleAddToCart}
           whileTap={{ scale: 0.95 }}
         >
-          <AnimatePresence mode="wait">
-            {isAdded ? (
-              <motion.span
-                key="added"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                Added
-              </motion.span>
-            ) : (
-              <motion.span
-                key="add"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-              >
-                Add to Cart
-              </motion.span>
-            )}
-          </AnimatePresence>
+          Add to Cart
         </motion.button>
       </div>
+
+      <QuickSelectModal 
+        product={product}
+        isOpen={isQuickSelectOpen}
+        onClose={() => setIsQuickSelectOpen(false)}
+      />
     </motion.div>
   );
 }

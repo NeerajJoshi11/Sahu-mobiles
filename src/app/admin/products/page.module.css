@@ -62,6 +62,30 @@
   font-weight: 600;
 }
 
+.colorCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.colorSwatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.variantBadge {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
 .actions {
   display: flex;
   gap: 1rem;
@@ -92,10 +116,151 @@
   border: 1px solid #d4af37;
   border-radius: 16px;
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   padding: 2.5rem;
   max-height: 90vh;
   overflow-y: auto;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--foreground);
+}
+
+.checkboxLabel input {
+  width: 18px;
+  height: 18px;
+  accent-color: #d4af37;
+}
+
+.variantsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+.headerActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.variantRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.variantInputs {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 40px 1fr 1.5fr 60px 1fr 1.2fr 1.2fr 1fr;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.variantInputs input {
+  padding: 0.5rem !important;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.variantColorPicker {
+  padding: 0 !important;
+  width: 40px;
+  height: 34px;
+  cursor: pointer;
+  border: none !important;
+  background: none !important;
+}
+
+.variantImagePreview {
+  width: 50px;
+  height: 34px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.variantImagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.noImagePlaceholder {
+  font-size: 0.6rem;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.priceWithDiscount {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.discountBadge {
+  position: absolute;
+  right: -5px;
+  top: -12px;
+  background: #ff4757;
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.removeBtn:hover {
+  opacity: 1;
+}
+
+.addVariantBtn {
+  background: none;
+  border: 1px solid #d4af37;
+  color: #d4af37;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addVariantBtn:hover {
+  background: #d4af37;
+  color: #000;
 }
 
 .modalTitle {

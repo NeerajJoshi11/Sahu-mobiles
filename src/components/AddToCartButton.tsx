@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart, Product } from "@/context/CartContext";
 
-export function AddToCartButton({ product }: { product: Product }) {
+export function AddToCartButton({ product, className }: { product: Product, className?: string }) {
   const { addToCart } = useCart();
   const [isAdded, setIsAdded] = useState(false);
 
@@ -16,7 +16,7 @@ export function AddToCartButton({ product }: { product: Product }) {
 
   return (
     <motion.button 
-      className={`btn ${isAdded ? 'btn-success' : 'btn-primary'}`}
+      className={className || `btn ${isAdded ? 'btn-success' : 'btn-primary'}`}
       style={{ 
         width: "100%", 
         padding: "1rem", 

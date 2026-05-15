@@ -1,0 +1,154 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background: var(--background, #0a0a0a);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.header {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  background: linear-gradient(90deg, #fff, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #fff;
+}
+
+.content {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.dropzone {
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dropzone:hover {
+  border-color: var(--accent, #d4af37);
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.dropzone b {
+  color: var(--accent, #d4af37);
+}
+
+.templateLink {
+  display: inline-block;
+  margin-top: 1rem;
+  background: none;
+  border: none;
+  color: var(--accent, #d4af37);
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.previewTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.previewTable th {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+  font-weight: 500;
+}
+
+.previewTable td {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.errorText {
+  color: #ff4444;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 68, 68, 0.1);
+  border-radius: 8px;
+}
+
+.footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.importBtn {
+  background: var(--accent, #d4af37);
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.importBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.importBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

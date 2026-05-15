@@ -52,6 +52,8 @@ export async function POST(request: Request) {
             productId: item.id,
             quantity: item.quantity,
             price: item.price,
+            selectedColor: item.selectedColor || null,
+            selectedVariant: item.selectedVariant || null,
           })),
         },
       },
