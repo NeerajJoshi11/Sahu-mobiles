@@ -50,31 +50,40 @@ export default function OrderDetailsPage({ params: paramsPromise }: { params: Pr
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Order Items</h2>
             <div className={styles.itemsList}>
-              {order.items?.map((item: any) => (
-                <div key={item.id} className={styles.item}>
-                  <div className={styles.itemMain}>
-                    <div className={styles.itemImage}>
-                      <Image 
-                        src={item.product?.image || "/placeholder.png"} 
-                        alt={item.product?.name || "Product"} 
-                        fill 
-                        style={{ objectFit: "cover" }}
-                      />
+              {order.items?.map((item: any) => {
+                // Find variant image if available
+                const variant = item.product?.variants?.find((v: any) => 
+                  (v.colorName === item.selectedColor || !item.selectedColor) &&
+                  (`${v.ram} / ${v.storage}` === item.selectedVariant || !item.selectedVariant)
+                );
+                const displayImage = variant?.image || item.product?.image || "/placeholder.png";
+
+                return (
+                  <div key={item.id} className={styles.item}>
+                    <div className={styles.itemMain}>
+                      <div className={styles.itemImage}>
+                        <Image 
+                          src={displayImage} 
+                          alt={item.product?.name || "Product"} 
+                          fill 
+                          style={{ objectFit: "cover" }}
+                        />
+                      </div>
+                      <div className={styles.itemInfo}>
+                        <span className={styles.itemName}>{item.product?.name || "Product"}</span>
+                        <span className={styles.itemMeta}>
+                          {item.selectedColor && `Color: ${item.selectedColor}`}
+                          {item.selectedVariant && ` | ${item.selectedVariant}`}
+                        </span>
+                      </div>
                     </div>
-                    <div className={styles.itemInfo}>
-                      <span className={styles.itemName}>{item.product?.name || "Product"}</span>
-                      <span className={styles.itemMeta}>
-                        {item.selectedColor && `Color: ${item.selectedColor}`}
-                        {item.selectedVariant && ` | ${item.selectedVariant}`}
-                      </span>
+                    <div className={styles.itemPrice}>
+                      <span>{item.quantity} x ₹{item.price.toLocaleString()}</span>
+                      <strong>₹{(item.price * item.quantity).toLocaleString()}</strong>
                     </div>
                   </div>
-                  <div className={styles.itemPrice}>
-                    <span>{item.quantity} x ₹{item.price.toLocaleString()}</span>
-                    <strong>₹{(item.price * item.quantity).toLocaleString()}</strong>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className={styles.summary}>
               <div className={styles.summaryRow}>

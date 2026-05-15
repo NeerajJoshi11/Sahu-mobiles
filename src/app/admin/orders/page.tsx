@@ -271,7 +271,12 @@ export default function AdminOrdersPage() {
                     <div className={styles.itemsList}>
                       {order.items?.map((item: any) => (
                         <div key={item.id} className={styles.item}>
-                          <div className={styles.itemName}>{item.product?.name} x {item.quantity}</div>
+                          <div className={styles.itemHeader}>
+                            {item.product?.image && (
+                              <img src={item.product.image} alt="" className={styles.adminProductImg} />
+                            )}
+                            <div className={styles.itemName}>{item.product?.name} x {item.quantity}</div>
+                          </div>
                           {(item.selectedColor || item.selectedVariant) && (
                             <div className={styles.itemOptions}>
                               {item.selectedColor && <span>🎨 {item.selectedColor}</span>}

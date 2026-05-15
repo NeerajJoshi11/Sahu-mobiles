@@ -126,6 +126,21 @@
   color: var(--foreground);
 }
 
+.itemHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.adminProductImg {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .itemOptions {
   display: flex;
   gap: 0.5rem;
