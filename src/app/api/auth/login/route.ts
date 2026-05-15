@@ -28,7 +28,23 @@ export async function POST(request: Request) {
     }
 
     // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    let isPasswordValid = false;
+    try {
+      isPasswordValid = await bcrypt.compare(password, user.password);
+    } catch (err) {
+      // If bcrypt fails (e.g. because stored password is not a hash),
+      // fallback to direct comparison for legacy users
+      isPasswordValid = password === user.password;
+      
+      // OPTIONAL: Automatically upgrade the password to a hash here if it matches
+      if (isPasswordValid) {
+        const newHashedPassword = await bcrypt.hash(password, 10);
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { password: newHashedPassword }
+        });
+      }
+    }
 
     if (!isPasswordValid) {
       return NextResponse.json(

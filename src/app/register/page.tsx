@@ -46,7 +46,7 @@ function AuthContent() {
         router.push(callbackUrl);
         router.refresh();
       } else {
-        setError(data.error || "Authentication failed");
+        setError(data.details ? `${data.error}: ${data.details}` : data.error || "Authentication failed");
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
