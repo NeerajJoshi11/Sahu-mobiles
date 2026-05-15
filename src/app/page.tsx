@@ -135,7 +135,11 @@ export default function Home() {
             animate={{ opacity: 1 }}
             className={styles.noResults}
           >
-            <p>No products found matching "{searchQuery}". Check back soon!</p>
+            <p>
+              {searchQuery 
+                ? `No products found matching "${searchQuery}".` 
+                : "No premium phones available at the moment. Check back soon!"}
+            </p>
           </motion.div>
         ) : (
           <motion.div 
