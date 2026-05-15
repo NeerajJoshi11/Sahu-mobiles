@@ -58,7 +58,6 @@ export default function InventoryPage() {
     modelId: "",
     colorName: "",
     colorCode: "#000000",
-    image: "",
     hasVariants: false,
     variants: [] as Variant[],
   });
@@ -133,7 +132,6 @@ export default function InventoryPage() {
       modelId: "",
       colorName: "",
       colorCode: "#000000",
-      image: "",
       hasVariants: false,
       variants: [] as Variant[],
     });

@@ -9,12 +9,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid data format. Expected an array." }, { status: 400 });
     }
 
-    const results = await prisma.$transaction(
-      products.map((p: any) => {
+    const results = await prisma.$transaction(async (tx) => {
+      const processed = [];
+      
+      for (const p of products) {
         const { variants, id, ...productData } = p;
         
         if (id) {
-          return prisma.product.upsert({
+          const res = await tx.product.upsert({
             where: { id },
             update: {
               ...productData,
@@ -48,10 +50,10 @@ export async function POST(request: Request) {
               } : undefined
             }
           });
+          processed.push(res);
         } else {
           // Check for existing product by Name and Color to prevent duplicates
-          // This makes the import idempotent for spreadsheets that don't have IDs
-          const existing = await prisma.product.findFirst({
+          const existing = await tx.product.findFirst({
             where: {
               name: productData.name,
               colorName: productData.colorName || null,
@@ -60,7 +62,7 @@ export async function POST(request: Request) {
           });
 
           if (existing) {
-            return prisma.product.update({
+            const res = await tx.product.update({
               where: { id: existing.id },
               data: {
                 ...productData,
@@ -79,28 +81,31 @@ export async function POST(request: Request) {
                 } : undefined
               }
             });
+            processed.push(res);
+          } else {
+            const res = await tx.product.create({
+              data: {
+                ...productData,
+                variants: variants && variants.length > 0 ? {
+                  create: variants.map((v: any) => ({
+                    ram: String(v.ram),
+                    storage: String(v.storage),
+                    colorName: v.colorName || null,
+                    colorCode: v.colorCode || null,
+                    image: v.image || null,
+                    price: parseFloat(v.price),
+                    mrp: v.mrp ? parseFloat(v.mrp) : null,
+                    stock: parseInt(v.stock) || 0
+                  }))
+                } : undefined
+              }
+            });
+            processed.push(res);
           }
-
-          return prisma.product.create({
-            data: {
-              ...productData,
-              variants: variants && variants.length > 0 ? {
-                create: variants.map((v: any) => ({
-                  ram: String(v.ram),
-                  storage: String(v.storage),
-                  colorName: v.colorName || null,
-                  colorCode: v.colorCode || null,
-                  image: v.image || null,
-                  price: parseFloat(v.price),
-                  mrp: v.mrp ? parseFloat(v.mrp) : null,
-                  stock: parseInt(v.stock) || 0
-                }))
-              } : undefined
-            }
-          });
         }
-      })
-    );
+      }
+      return processed;
+    });
 
     return NextResponse.json({ 
       message: `Successfully processed ${results.length} products.`,

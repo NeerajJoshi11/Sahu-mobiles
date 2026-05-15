@@ -14,7 +14,10 @@ export interface Product {
   ram: string;
   storage: string;
   colors?: string[];
+  colorName?: string | null;
+  colorCode?: string | null;
   hasVariants?: boolean;
+  variants?: any[];
   selectedColor?: string;
   selectedVariant?: string;
 }
