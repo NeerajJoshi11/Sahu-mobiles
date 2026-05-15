@@ -43,12 +43,22 @@ export default function Home() {
     <div className={styles.page}>
       <motion.section 
         className={styles.hero}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
       >
-        <div className={styles.heroBackground}></div>
-        <div className={styles.heroGlow}></div>
+        <video 
+          autoPlay 
+          muted 
+          loop 
+          playsInline 
+          className={styles.heroVideo}
+          poster="/images/phone1.png"
+        >
+          <source src="/appearance.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+        <div className={styles.heroOverlay}></div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <motion.h1 
             className={styles.heroTitle}
