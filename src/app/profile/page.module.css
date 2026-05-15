@@ -141,6 +141,41 @@
 .orderTotal {
   font-weight: 700;
   color: #fff;
+  font-size: 1.1rem;
+}
+
+.orderMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.paymentMethod, .deliveryMethod {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.processing {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.shipped {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+}
+
+.delivered {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.cancelled {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .viewBtn {

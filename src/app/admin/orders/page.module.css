@@ -153,35 +153,11 @@
   outline: 2px solid var(--accent);
 }
 
-.pending {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-}
-
-.processing {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-}
-
-.shipped {
-  background: rgba(212, 175, 55, 0.1);
-  color: #d4af37;
-}
-
-.completed {
-  background: rgba(139, 92, 246, 0.1);
-  color: #8b5cf6;
-}
-
-.delivered {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
-}
-
-.cancelled {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-}
+.pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.processing { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.shipped { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+.completed, .delivered { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+.cancelled { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
 
 .viewBtn {
   background: none;

@@ -223,6 +223,7 @@ export default function AdminOrdersPage() {
           <option value="ALL">All Statuses</option>
           <option value="PENDING">Pending</option>
           <option value="PROCESSING">Processing</option>
+          <option value="SHIPPED">Shipped</option>
           <option value="COMPLETED">Completed</option>
           <option value="DELIVERED">Delivered</option>
           <option value="CANCELLED">Cancelled</option>
@@ -309,6 +310,7 @@ export default function AdminOrdersPage() {
                     >
                       <option value="PENDING">PENDING</option>
                       <option value="PROCESSING">PROCESSING</option>
+                      <option value="SHIPPED">SHIPPED</option>
                       <option value="COMPLETED">COMPLETED</option>
                       <option value="DELIVERED">DELIVERED</option>
                       <option value="CANCELLED">CANCELLED</option>

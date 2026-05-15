@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
   try {
@@ -18,6 +19,10 @@ export async function POST(request: Request) {
       paymentMethod,
       deliveryMethod 
     } = data;
+
+    // 1. Get User Session
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("customer_session")?.value;
 
     // 1. Validation
     if (!email || !firstName || !lastName || !address || !city || !state || !pincode || !phone || !items || items.length === 0) {
@@ -38,6 +43,7 @@ export async function POST(request: Request) {
         status: "PENDING",
         deliveryMethod: deliveryMethod || "STANDARD",
         fulfillmentProvider: deliveryMethod === "EXPRESS" ? "SAHU_LOCAL" : "SHIPROCKET",
+        userId: sessionId || null,
         items: {
           create: items.map((item: any) => ({
             productId: item.id,

@@ -87,10 +87,19 @@ export default function ProfilePage() {
                       {order.status}
                     </span>
                   </div>
-                  <div className={styles.orderInfo}>
-                    <span className={styles.orderTotal}>Total: ₹{order.totalAmount.toLocaleString()}</span>
-                    <button className={styles.viewBtn}>View Details</button>
-                  </div>
+                    <div className={styles.orderInfo}>
+                      <div className={styles.orderMeta}>
+                        <span className={styles.orderTotal}>Total: ₹{order.total.toLocaleString()}</span>
+                        <span className={styles.paymentMethod}>
+                          {order.paymentMethod === 'WHATSAPP' ? '📱 WhatsApp' : 
+                           order.paymentMethod === 'COD' ? '💵 COD' : '💳 Online'}
+                        </span>
+                        <span className={styles.deliveryMethod}>
+                          {order.deliveryMethod === 'EXPRESS' ? '⚡ 2-Hour' : '📦 Standard'}
+                        </span>
+                      </div>
+                      <button className={styles.viewBtn} onClick={() => router.push(`/profile/orders/${order.id}`)}>View Details</button>
+                    </div>
                 </div>
               ))}
             </div>

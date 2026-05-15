@@ -114,7 +114,7 @@ export default function CheckoutPage() {
       }
 
       clearCart();
-      router.push("/success");
+      router.push(`/success?orderId=${orderData.orderId}`);
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
       setIsProcessing(false);
