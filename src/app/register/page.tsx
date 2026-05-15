@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import styles from "./page.module.css";
 
-export default function AuthPage() {
+function AuthContent() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
@@ -39,7 +43,7 @@ export default function AuthPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push("/");
+        router.push(callbackUrl);
         router.refresh();
       } else {
         setError(data.error || "Authentication failed");
@@ -151,5 +155,13 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={<div className={styles.loading}>Loading...</div>}>
+      <AuthContent />
+    </Suspense>
   );
 }

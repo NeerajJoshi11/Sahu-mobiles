@@ -33,8 +33,36 @@ export default function CheckoutPage() {
 
   const [paymentMethod, setPaymentMethod] = useState("WHATSAPP"); // WHATSAPP or COD
   const [expressPincodes, setExpressPincodes] = useState<string[]>([]);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+        
+        if (!data.user) {
+          // If not logged in, redirect to register with a return path
+          router.push("/register?callbackUrl=/checkout");
+          return;
+        }
+        
+        // Pre-fill form if user exists
+        setFormData(prev => ({
+          ...prev,
+          email: data.user.email || "",
+          firstName: data.user.name?.split(" ")[0] || "",
+          lastName: data.user.name?.split(" ").slice(1).join(" ") || "",
+          phone: data.user.phone || "",
+        }));
+        setIsAuthLoading(false);
+      } catch (err) {
+        router.push("/register?callbackUrl=/checkout");
+      }
+    }
+
+    checkAuth();
+
     fetch("/api/admin/settings")
       .then(res => res.json())
       .then(data => {
@@ -42,7 +70,16 @@ export default function CheckoutPage() {
         const pincodeList = pincodeStr.split(",").map((p: string) => p.trim()).filter((p: string) => p.length > 0);
         setExpressPincodes(pincodeList);
       });
-  }, []);
+  }, [router]);
+
+  if (isAuthLoading) {
+    return (
+      <div className={`container ${styles.page} ${styles.loadingState}`}>
+        <div className={styles.spinner}></div>
+        <p>Verifying your session...</p>
+      </div>
+    );
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
