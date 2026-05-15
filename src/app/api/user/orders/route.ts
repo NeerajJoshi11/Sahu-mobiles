@@ -19,6 +19,17 @@ export async function GET() {
           orderBy: {
             createdAt: "desc",
           },
+          include: {
+            items: {
+              include: {
+                product: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
         },
       },
     });

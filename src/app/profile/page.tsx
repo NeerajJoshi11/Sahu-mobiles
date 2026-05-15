@@ -87,6 +87,17 @@ export default function ProfilePage() {
                       {order.status}
                     </span>
                   </div>
+                  <div className={styles.orderProducts}>
+                    {order.items?.map((item: any) => (
+                      <div key={item.id} className={styles.productItem}>
+                        <span className={styles.productQty}>x{item.quantity}</span>
+                        {item.product?.name}
+                        {item.selectedVariant && (
+                          <span className={styles.orderDate}>({item.selectedVariant})</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                     <div className={styles.orderInfo}>
                       <div className={styles.orderMeta}>
                         <span className={styles.orderTotal}>Total: ₹{order.total.toLocaleString()}</span>

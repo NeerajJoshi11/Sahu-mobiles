@@ -58,6 +58,13 @@ function SuccessContent() {
               <span>Total Amount:</span>
               <span className={styles.totalAmount}>₹{order.total?.toLocaleString()}</span>
             </div>
+            <div className={styles.productNames}>
+              {order.items?.map((item: any) => (
+                <div key={item.id} className={styles.productItem}>
+                  {item.product?.name} <span className={styles.qty}>x{item.quantity}</span>
+                </div>
+              ))}
+            </div>
             <div className={styles.summaryRow}>
               <span>Payment:</span>
               <span>{order.paymentMethod === 'WHATSAPP' ? 'WhatsApp Link' : order.paymentMethod}</span>

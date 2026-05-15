@@ -114,3 +114,25 @@
   font-weight: 700;
   font-size: 1.1rem;
 }
+
+.productNames {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.productItem {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.qty {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
