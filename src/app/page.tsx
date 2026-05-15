@@ -178,11 +178,9 @@ export default function Home() {
               }
             } as Variants}
           >
-            <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
-            </AnimatePresence>
           </motion.div>
         )}
       </section>

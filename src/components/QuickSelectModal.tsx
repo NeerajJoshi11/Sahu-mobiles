@@ -67,76 +67,76 @@ export function QuickSelectModal({ product, isOpen, onClose }: QuickSelectModalP
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <div className={styles.backdrop} onClick={onClose}>
-        <motion.div 
-          className={styles.modal} 
-          onClick={e => e.stopPropagation()}
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        >
-          <button className={styles.closeBtn} onClick={onClose}>×</button>
-          
-          <div className={styles.header}>
-            <div className={styles.imageContainer}>
-              <Image 
-                src={selectedVariant?.image || product.image} 
-                alt={product.name} 
-                fill 
-                className={styles.image}
-              />
-            </div>
-            <div className={styles.info}>
-              <h3>{product.name}</h3>
-              <p className={styles.price}>₹{(selectedVariant?.price || product.price).toLocaleString()}</p>
-            </div>
-          </div>
-
-          <div className={styles.options}>
-            {colors.length > 0 && (
-              <div className={styles.optionGroup}>
-                <label>Select Color: <span>{selectedColor}</span></label>
-                <div className={styles.chipGrid}>
-                  {colors.map((color: any) => (
-                    <button
-                      key={color.name}
-                      className={`${styles.colorChip} ${selectedColor === color.name ? styles.active : ""}`}
-                      onClick={() => setSelectedColor(color.name)}
-                    >
-                      <div className={styles.colorPreview} style={{ backgroundColor: color.code }} />
-                    </button>
-                  ))}
-                </div>
+      {isOpen && (
+        <div className={styles.backdrop} onClick={onClose}>
+          <motion.div 
+            className={styles.modal} 
+            onClick={e => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          >
+            <button className={styles.closeBtn} onClick={onClose}>×</button>
+            
+            <div className={styles.header}>
+              <div className={styles.imageContainer}>
+                <Image 
+                  src={selectedVariant?.image || product.image} 
+                  alt={product.name} 
+                  fill 
+                  className={styles.image}
+                />
               </div>
-            )}
-
-            {availableConfigs.length > 0 && (
-              <div className={styles.optionGroup}>
-                <label>Select Storage:</label>
-                <div className={styles.chipGrid}>
-                  {availableConfigs.map((v: any) => (
-                    <button
-                      key={v.id}
-                      className={`${styles.variantChip} ${selectedVariant?.id === v.id ? styles.active : ""}`}
-                      onClick={() => setSelectedVariant(v)}
-                    >
-                      {v.ram} / {v.storage}
-                    </button>
-                  ))}
-                </div>
+              <div className={styles.info}>
+                <h3>{product.name}</h3>
+                <p className={styles.price}>₹{(selectedVariant?.price || product.price).toLocaleString()}</p>
               </div>
-            )}
-          </div>
+            </div>
 
-          <button className={styles.confirmBtn} onClick={handleConfirm}>
-            Add to Cart
-          </button>
-        </motion.div>
-      </div>
+            <div className={styles.options}>
+              {colors.length > 0 && (
+                <div className={styles.optionGroup}>
+                  <label>Select Color: <span>{selectedColor}</span></label>
+                  <div className={styles.chipGrid}>
+                    {colors.map((color: any) => (
+                      <button
+                        key={color.name}
+                        className={`${styles.colorChip} ${selectedColor === color.name ? styles.active : ""}`}
+                        onClick={() => setSelectedColor(color.name)}
+                      >
+                        <div className={styles.colorPreview} style={{ backgroundColor: color.code }} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {availableConfigs.length > 0 && (
+                <div className={styles.optionGroup}>
+                  <label>Select Storage:</label>
+                  <div className={styles.chipGrid}>
+                    {availableConfigs.map((v: any) => (
+                      <button
+                        key={v.id}
+                        className={`${styles.variantChip} ${selectedVariant?.id === v.id ? styles.active : ""}`}
+                        onClick={() => setSelectedVariant(v)}
+                      >
+                        {v.ram} / {v.storage}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button className={styles.confirmBtn} onClick={handleConfirm}>
+              Add to Cart
+            </button>
+          </motion.div>
+        </div>
+      )}
     </AnimatePresence>
   );
 }
