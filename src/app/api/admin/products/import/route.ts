@@ -19,12 +19,22 @@ export async function POST(request: Request) {
 
     const response = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\"",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1"
       }
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch the URL");
+      throw new Error(`Failed to fetch the URL (Status: ${response.status})`);
     }
 
     const html = await response.text();
@@ -65,9 +75,9 @@ export async function POST(request: Request) {
         image = image || ($("#landingImage").attr("src") || $("#imgTagWrapperId img").attr("src") || "");
         description = description || $("#feature-bullets").text().trim();
       } else if (domain.includes("flipkart")) {
-        name = name || $(".B_NuCI").text().trim();
-        price = price === "0" ? ($("._30jeq3._16Jk6d").text().trim() || $("._30jeq3").first().text().trim()) : price;
-        image = image || ($("._396cs4._2amPTt._3q99q2").attr("src") || $(".q6DClP").attr("src") || "");
+        name = name || $(".VU-Tz5").text().trim() || $(".B_NuCI").text().trim();
+        price = price === "0" ? ($(".Nx9bqj.CxhGGd").text().trim() || $("div.Nx9bqj").first().text().trim() || $("._30jeq3._16Jk6d").text().trim() || $("._30jeq3").first().text().trim()) : price;
+        image = image || ($("img.v2sH7K").attr("src") || $("img.DByuf4").attr("src") || $("._396cs4._2amPTt._3q99q2").attr("src") || $(".q6DClP").attr("src") || "");
         description = description || ($("._1mXcCf").text().trim() || $(".RmoJUa").text().trim());
       }
     }

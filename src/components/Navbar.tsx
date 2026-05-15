@@ -5,74 +5,44 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { usePathname } from "next/navigation";
 import styles from "./Navbar.module.css";
+import { Sidebar } from "./Sidebar";
 
 export function Navbar() {
   const { cartCount, setIsCartOpen } = useCart();
   const pathname = usePathname();
-  const [user, setUser] = useState<any>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    fetch("/api/auth/me")
-      .then(res => res.json())
-      .then(data => setUser(data.user));
-  }, [pathname]);
-
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setUser(null);
-    setIsDropdownOpen(false);
-    window.location.reload();
-  };
-
-  // Close dropdown when clicking outside (simple version)
-  useEffect(() => {
-    const handleClick = () => setIsDropdownOpen(false);
-    window.addEventListener("click", handleClick);
-    return () => window.removeEventListener("click", handleClick);
   }, []);
 
   // Hide Navbar on admin pages
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <nav className={styles.navbar}>
-      <div className={`container ${styles.navContainer}`}>
-        <Link href="/" className={styles.logo}>
-          SAHU MOBILES
-        </Link>
-        
-        <div className={styles.navLinks}>
-          {!mounted ? null : user ? (
-            <div className={styles.userMenu} onClick={(e) => e.stopPropagation()}>
-              <button 
-                className={styles.userToggle} 
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                Hi, {user.name.split(' ')[0]}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isDropdownOpen ? styles.rotate : ""}>
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              
-              {isDropdownOpen && (
-                <div className={styles.dropdown}>
-                  <Link href="/profile" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)}>
-                    Profile
-                  </Link>
-                  <button onClick={handleLogout} className={styles.dropdownItem}>
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <Link href="/register" className={styles.authLink}>
-              Sign In
+    <>
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <nav className={styles.navbar}>
+        <div className={`container ${styles.navContainer}`}>
+          <div className={styles.leftNav}>
+            <button 
+              className={styles.hamburgerBtn}
+              onClick={() => setIsSidebarOpen(true)}
+              aria-label="Open menu"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+            <Link href="/" className={styles.logo}>
+              SAHU MOBILES
             </Link>
-          )}
+          </div>
+          
+          <div className={styles.navLinks}>
           <button 
             className={styles.cartButton}
             onClick={() => setIsCartOpen(true)}
@@ -100,5 +70,6 @@ export function Navbar() {
         </div>
       </div>
     </nav>
+    </>
   );
 }

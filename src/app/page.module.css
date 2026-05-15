@@ -37,7 +37,14 @@
 
 @media (max-width: 768px) {
   .hero {
-    min-height: 60vh;
+    min-height: unset;
+    height: 50vh; /* Better proportion for mobile */
+    max-height: 500px;
+    width: 100%;
+  }
+  
+  .heroVideo {
+    object-position: center center; /* Keep the focal point centered on small screens */
   }
 }
 

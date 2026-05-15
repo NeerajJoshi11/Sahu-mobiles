@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Product, useCart } from "@/context/CartContext";
@@ -25,18 +25,20 @@ export function QuickSelectModal({ product, isOpen, onClose }: QuickSelectModalP
   );
 
   // Group variants by color
-  const colorGroups = variants.reduce((acc: any, variant: any) => {
-    const color = variant.colorName || "Standard";
-    if (!acc[color]) {
-      acc[color] = {
-        name: color,
-        code: variant.colorCode || "#808080",
-        variants: []
-      };
-    }
-    acc[color].variants.push(variant);
-    return acc;
-  }, {});
+  const colorGroups = useMemo(() => {
+    return variants.reduce((acc: any, variant: any) => {
+      const color = variant.colorName || "Standard";
+      if (!acc[color]) {
+        acc[color] = {
+          name: color,
+          code: variant.colorCode || "#808080",
+          variants: []
+        };
+      }
+      acc[color].variants.push(variant);
+      return acc;
+    }, {});
+  }, [variants]);
 
   const colors = Object.values(colorGroups);
   const availableConfigs = selectedColor ? colorGroups[selectedColor]?.variants || [] : [];

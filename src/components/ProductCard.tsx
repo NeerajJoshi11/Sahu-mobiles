@@ -15,6 +15,7 @@ import { QuickSelectModal } from "./QuickSelectModal";
 
 export function ProductCard({ product }: ProductCardProps) {
   const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
+  const { addToCart } = useCart();
 
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30, scale: 0.95 },
@@ -32,7 +33,13 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsQuickSelectOpen(true);
+    e.stopPropagation(); // Prevent touch events from bubbling up and getting swallowed
+    
+    if (product.hasVariants) {
+      setIsQuickSelectOpen(true);
+    } else {
+      addToCart(product); // Add directly to cart if no variants
+    }
   };
 
   return (

@@ -28,39 +28,50 @@ export function BulkImportModal({ onClose, onSuccess }: BulkImportModalProps) {
         const ws = wb.Sheets[wsname];
         const rawData = XLSX.utils.sheet_to_json(ws);
         
+        // Normalize keys (remove spaces, make lowercase) to prevent case-sensitivity bugs
+        const normalizedData = rawData.map((row: any) => {
+          const normalizedRow: any = {};
+          for (const key in row) {
+            const cleanKey = key.toLowerCase().replace(/\s+/g, '');
+            normalizedRow[cleanKey] = row[key];
+          }
+          return normalizedRow;
+        });
+        
         // Group by ModelId
-        const grouped = rawData.reduce((acc: any, row: any) => {
-          const modelId = String(row.ModelId || row.modelId || "").trim();
+        const grouped = normalizedData.reduce((acc: any, row: any) => {
+          const modelId = String(row.modelid || "").trim();
           if (!modelId) return acc;
 
           if (!acc[modelId]) {
             acc[modelId] = {
-              name: row.Name || row.name,
+              name: row.name || "Unknown Product",
               modelId: modelId,
-              description: row.Description || row.description || "",
-              category: row.Category || row.category || "Mobiles",
-              image: row.Image || row.image || "",
-              processor: row.Processor || row.processor || "",
-              screen: row.Screen || row.screen || "",
-              ram: row.RAM || row.ram || "",
-              storage: row.Storage || row.storage || "",
-              colorName: row.ColorName || row.colorName || "",
-              colorCode: row.ColorCode || row.colorCode || "",
-              price: parseFloat(row.Price || row.price || "0"),
-              stock: parseInt(row.Stock || row.stock || "0"),
+              description: row.description || "",
+              category: row.category || "Smartphone",
+              image: row.image || "",
+              processor: row.processor || "",
+              screen: row.screen || "",
+              ram: String(row.ram || ""),
+              storage: String(row.storage || ""),
+              colorName: row.colorname || "",
+              colorCode: row.colorcode || "",
+              price: parseFloat(row.price ?? "0") || 0,
+              stock: parseInt(row.stock ?? "0") || 0,
+              hasVariants: true,
               variants: []
             };
           }
 
           // Add as a variant
           acc[modelId].variants.push({
-            ram: String(row.RAM || row.ram || ""),
-            storage: String(row.Storage || row.storage || ""),
-            colorName: row.ColorName || row.colorName || "",
-            colorCode: row.ColorCode || row.colorCode || "",
-            price: parseFloat(row.Price || row.price || "0"),
-            mrp: parseFloat(row.MRP || row.mrp || "0"),
-            stock: parseInt(row.Stock || row.stock || "0")
+            ram: String(row.ram || ""),
+            storage: String(row.storage || ""),
+            colorName: row.colorname || "",
+            colorCode: row.colorcode || "",
+            price: parseFloat(row.price ?? "0") || 0,
+            mrp: parseFloat(row.mrp ?? "0") || 0,
+            stock: parseInt(row.stock ?? "0") || 0
           });
 
           return acc;

@@ -14,6 +14,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const categories = ["All", "Smartphone", "Tablet", "Accessories"];
 
   useEffect(() => {
     setMounted(true);
@@ -33,11 +36,13 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.processor.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          product.processor.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className={styles.page}>
@@ -122,6 +127,24 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
+
+        <motion.div 
+          className={styles.categoryFilters}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          {categories.map(cat => (
+            <button
+              key={cat}
+              className={`${styles.categoryBtn} ${selectedCategory === cat ? styles.active : ""}`}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </motion.div>
 
         {!mounted || loading ? (
           <div className={styles.productGrid}>
