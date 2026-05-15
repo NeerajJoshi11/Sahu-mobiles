@@ -11,6 +11,8 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [staff, setStaff] = useState<any[]>([]);
   const [showAssignModal, setShowAssignModal] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchOrders = async () => {
     try {
@@ -40,10 +42,7 @@ export default function AdminOrdersPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm(`Are you sure you want to delete order #${id.slice(-6).toUpperCase()}? This cannot be undone.`)) {
-      return;
-    }
-
+    setIsDeleting(true);
     try {
       const res = await fetch(`/api/admin/orders/${id}`, {
         method: "DELETE",
@@ -51,11 +50,14 @@ export default function AdminOrdersPage() {
 
       if (res.ok) {
         setOrders(orders.filter(o => o.id !== id));
+        setShowDeleteModal(null);
       } else {
         alert("Failed to delete order.");
       }
     } catch (err) {
       alert("Error deleting order.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -329,7 +331,7 @@ export default function AdminOrdersPage() {
                       <span className={styles.boyName}>👤 {order.deliveryBoyName}</span>
                     )}
                     <button className={styles.printBtn} onClick={() => handlePrint(order)}>Print</button>
-                    <button className={styles.deleteBtn} onClick={() => handleDelete(order.id)}>Delete</button>
+                    <button className={styles.deleteBtn} onClick={() => setShowDeleteModal(order.id)}>Delete</button>
                   </td>
                 </tr>
               ))
@@ -338,7 +340,7 @@ export default function AdminOrdersPage() {
         </table>
       </div>
 
-      {showAssignModal && (
+       {showAssignModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <h2 className={styles.modalTitle}>Assign Delivery Boy</h2>
@@ -360,6 +362,35 @@ export default function AdminOrdersPage() {
               )}
             </div>
             <button className={styles.cancelBtn} onClick={() => setShowAssignModal(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={`${styles.modal} ${styles.deleteModal}`}>
+            <div className={styles.deleteIcon}>⚠️</div>
+            <h2 className={styles.modalTitle}>Delete Order?</h2>
+            <p className={styles.modalSubtitle}>
+              Are you sure you want to delete order <strong>#{showDeleteModal.slice(-6).toUpperCase()}</strong>? 
+              This action is permanent and cannot be undone.
+            </p>
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.cancelBtn} 
+                onClick={() => setShowDeleteModal(null)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button 
+                className={styles.confirmDeleteBtn} 
+                onClick={() => handleDelete(showDeleteModal)}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Permanently"}
+              </button>
+            </div>
           </div>
         </div>
       )}
