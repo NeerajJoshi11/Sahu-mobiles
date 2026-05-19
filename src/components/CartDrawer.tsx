@@ -16,6 +16,7 @@ export function CartDrawer() {
     removeFromCart, 
     cartTotal,
     appliedCoupon,
+    appliedCouponDescription,
     discountAmount,
     applyCoupon,
     removeCoupon
@@ -156,10 +157,17 @@ export function CartDrawer() {
                 </button>
               </div>
             ) : (
-              <div className={styles.activeCoupon}>
-                <span className={styles.couponBadge}>{appliedCoupon}</span>
-                <span className={styles.couponSuccess}>Applied!</span>
-                <button onClick={removeCoupon} className={styles.removeCouponBtn}>Remove</button>
+              <div className={styles.activeCouponContainer}>
+                <div className={styles.activeCoupon}>
+                  <span className={styles.couponBadge}>{appliedCoupon}</span>
+                  <span className={styles.couponSuccess}>Applied!</span>
+                  <button onClick={removeCoupon} className={styles.removeCouponBtn}>Remove</button>
+                </div>
+                {appliedCouponDescription && (
+                  <p className={styles.activeCouponDesc}>
+                    {appliedCouponDescription}
+                  </p>
+                )}
               </div>
             )}
             {couponMessage && (

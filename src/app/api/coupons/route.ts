@@ -28,6 +28,10 @@ export async function POST(request: Request) {
         minAmount: parseFloat(data.minAmount) || 0,
         isActive: data.isActive !== undefined ? data.isActive : true,
         expiresAt: data.expiresAt ? new Date(data.expiresAt) : null,
+        applicableBrands: Array.isArray(data.applicableBrands) 
+          ? data.applicableBrands.join(",") 
+          : (data.applicableBrands || null),
+        description: data.description || null,
       }
     });
     return NextResponse.json(coupon);

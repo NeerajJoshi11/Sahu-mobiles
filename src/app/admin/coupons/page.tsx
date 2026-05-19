@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
+const KNOWN_BRANDS = ["Apple", "Samsung", "Vivo", "Oppo", "Realme", "Motorola", "Mi"];
+
 interface Coupon {
   id: string;
   code: string;
@@ -11,6 +13,8 @@ interface Coupon {
   minAmount: number;
   isActive: boolean;
   expiresAt: string | null;
+  applicableBrands: string | null;
+  description: string | null;
   createdAt: string;
 }
 
@@ -25,7 +29,9 @@ export default function AdminCouponsPage() {
     value: "",
     minAmount: "0",
     expiresAt: "",
-    isActive: true
+    isActive: true,
+    applicableBrands: [] as string[],
+    description: ""
   });
 
   useEffect(() => {
@@ -66,7 +72,16 @@ export default function AdminCouponsPage() {
       if (!res.ok) throw new Error(data.error || "Failed to create coupon");
       
       setIsModalOpen(false);
-      setFormData({ code: "", type: "PERCENTAGE", value: "", minAmount: "0", expiresAt: "", isActive: true });
+      setFormData({ 
+        code: "", 
+        type: "PERCENTAGE", 
+        value: "", 
+        minAmount: "0", 
+        expiresAt: "", 
+        isActive: true,
+        applicableBrands: [],
+        description: ""
+      });
       fetchCoupons();
     } catch (err: any) {
       setError(err.message);
@@ -121,19 +136,33 @@ export default function AdminCouponsPage() {
                 <th>Code</th>
                 <th>Discount</th>
                 <th>Min. Order</th>
+                <th>Brands</th>
+                <th>Description</th>
                 <th>Status</th>
                 <th>Expires</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {coupons.map((coupon) => (
+               {coupons.map((coupon) => (
                 <tr key={coupon.id}>
                   <td className={styles.codeCell}>{coupon.code}</td>
                   <td>
                     {coupon.type === "PERCENTAGE" ? `${coupon.value}% OFF` : `₹${coupon.value} OFF`}
                   </td>
                   <td>₹{coupon.minAmount.toLocaleString()}</td>
+                  <td>
+                    {coupon.applicableBrands ? (
+                      <div className={styles.brandTags}>
+                        {coupon.applicableBrands.split(",").map(b => (
+                          <span key={b} className={styles.brandTag}>{b}</span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className={styles.allBrands}>All Brands</span>
+                    )}
+                  </td>
+                  <td className={styles.descCell} title={coupon.description || ""}>{coupon.description || "-"}</td>
                   <td>
                     <button 
                       className={`${styles.statusBadge} ${coupon.isActive ? styles.active : styles.inactive}`}
@@ -152,7 +181,7 @@ export default function AdminCouponsPage() {
               ))}
               {coupons.length === 0 && (
                 <tr>
-                  <td colSpan={6} className={styles.empty}>No coupons created yet</td>
+                  <td colSpan={8} className={styles.empty}>No coupons created yet</td>
                 </tr>
               )}
             </tbody>
@@ -213,6 +242,40 @@ export default function AdminCouponsPage() {
                     value={formData.expiresAt}
                     onChange={(e) => setFormData({...formData, expiresAt: e.target.value})}
                   />
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Coupon Description / Message (Optional)</label>
+                <textarea 
+                  placeholder="e.g. Get 10% off Vivo & Oppo devices!" 
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  className={styles.textarea}
+                  rows={2}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Applicable Brands (Optional - Leave unchecked for all brands)</label>
+                <div className={styles.brandsGrid}>
+                  {KNOWN_BRANDS.map(brand => {
+                    const b = brand.toLowerCase();
+                    const isChecked = formData.applicableBrands.includes(b);
+                    return (
+                      <label key={brand} className={styles.brandCheckboxLabel}>
+                        <input 
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) => {
+                            const updated = e.target.checked
+                              ? [...formData.applicableBrands, b]
+                              : formData.applicableBrands.filter(x => x !== b);
+                            setFormData({...formData, applicableBrands: updated});
+                          }}
+                        />
+                        <span>{brand}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
               <div className={styles.modalFooter}>

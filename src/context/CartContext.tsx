@@ -37,6 +37,7 @@ interface CartContextType {
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
   appliedCoupon: string | null;
+  appliedCouponDescription: string | null;
   discountAmount: number;
   applyCoupon: (code: string) => Promise<{ success: boolean; message: string }>;
   removeCoupon: () => void;
@@ -48,6 +49,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [appliedCouponDescription, setAppliedCouponDescription] = useState<string | null>(null);
   const [discountAmount, setDiscountAmount] = useState(0);
 
   // Load cart from local storage on mount
@@ -126,7 +128,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/coupons/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, cartTotal })
+        body: JSON.stringify({ code, cartTotal, items })
       });
       
       const data = await res.json();
@@ -134,6 +136,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         setAppliedCoupon(data.code);
         setDiscountAmount(data.discountAmount);
+        setAppliedCouponDescription(data.description || null);
         return { success: true, message: data.message };
       } else {
         return { success: false, message: data.error || "Invalid coupon" };
@@ -146,20 +149,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const removeCoupon = () => {
     setAppliedCoupon(null);
     setDiscountAmount(0);
+    setAppliedCouponDescription(null);
   };
 
-  // Recalculate discount if cart total changes
+  // Recalculate discount if cart total or items changes
   useEffect(() => {
     const syncDiscount = async () => {
       if (appliedCoupon) {
         const res = await fetch("/api/coupons/validate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: appliedCoupon, cartTotal })
+          body: JSON.stringify({ code: appliedCoupon, cartTotal, items })
         });
         const data = await res.json();
         if (res.ok) {
           setDiscountAmount(data.discountAmount);
+          setAppliedCouponDescription(data.description || null);
         } else {
           // If coupon becomes invalid (e.g. min amount not met), remove it
           removeCoupon();
@@ -167,7 +172,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     };
     syncDiscount();
-  }, [cartTotal, appliedCoupon]);
+  }, [cartTotal, appliedCoupon, items]);
 
   const cartCount = items.reduce((count, item) => count + item.quantity, 0);
 
@@ -184,6 +189,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         isCartOpen,
         setIsCartOpen,
         appliedCoupon,
+        appliedCouponDescription,
         discountAmount,
         applyCoupon,
         removeCoupon,

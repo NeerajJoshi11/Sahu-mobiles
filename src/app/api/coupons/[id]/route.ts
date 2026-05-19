@@ -18,6 +18,10 @@ export async function PUT(
         minAmount: data.minAmount ? parseFloat(data.minAmount) : undefined,
         isActive: data.isActive,
         expiresAt: data.expiresAt ? new Date(data.expiresAt) : undefined,
+        applicableBrands: data.applicableBrands !== undefined 
+          ? (Array.isArray(data.applicableBrands) ? data.applicableBrands.join(",") : data.applicableBrands)
+          : undefined,
+        description: data.description !== undefined ? data.description : undefined,
       }
     });
     

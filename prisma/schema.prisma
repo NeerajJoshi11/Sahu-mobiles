@@ -117,13 +117,15 @@ model NewsletterSubscriber {
 }
 
 model Coupon {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  type        String   @default("PERCENTAGE") // PERCENTAGE or FLAT
-  value       Float
-  minAmount   Float    @default(0)
-  isActive    Boolean  @default(true)
-  expiresAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(cuid())
+  code             String   @unique
+  type             String   @default("PERCENTAGE") // PERCENTAGE or FLAT
+  value            Float
+  minAmount        Float    @default(0)
+  isActive         Boolean  @default(true)
+  expiresAt        DateTime?
+  applicableBrands String?  // Comma-separated list of brands like "vivo,oppo"
+  description      String?  // Coupon description / customer message
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
