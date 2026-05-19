@@ -13,7 +13,14 @@ export async function POST(request: Request) {
       const processed = [];
       
       for (const p of products) {
-        const { variants, id, ...productData } = p;
+        const { variants, id, ...rawProductData } = p;
+        
+        // Normalize empty strings to null to match Prisma's expected optional fields
+        const productData = {
+          ...rawProductData,
+          colorName: rawProductData.colorName || null,
+          colorCode: rawProductData.colorCode || null,
+        };
         
         if (id) {
           const res = await tx.product.upsert({
@@ -105,6 +112,9 @@ export async function POST(request: Request) {
         }
       }
       return processed;
+    }, {
+      maxWait: 10000, // 10 seconds max wait to start transaction
+      timeout: 30000, // 30 seconds max duration for the transaction
     });
 
     return NextResponse.json({ 
