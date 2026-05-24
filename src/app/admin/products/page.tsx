@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 import { BulkImportModal } from "@/components/BulkImportModal";
+import * as XLSX from "xlsx";
 
 interface Variant {
   ram: string;
@@ -77,6 +78,63 @@ export default function InventoryPage() {
       console.error("Failed to fetch products:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const exportToCSV = () => {
+    try {
+      if (products.length === 0) {
+        setErrorMsg("No products to export.");
+        return;
+      }
+      
+      const csvData = products.flatMap((product) => {
+        if (product.variants && product.variants.length > 0) {
+          return product.variants.map((variant) => ({
+            Name: product.name,
+            ModelId: product.modelId || product.id,
+            Description: product.description,
+            Category: product.category,
+            Image: variant.image || product.image,
+            Processor: product.processor,
+            Screen: product.screen,
+            RAM: variant.ram,
+            Storage: variant.storage,
+            ColorName: variant.colorName || "",
+            ColorCode: variant.colorCode || "",
+            Price: typeof variant.price === "string" ? parseFloat(variant.price) : variant.price,
+            MRP: variant.mrp ? (typeof variant.mrp === "string" ? parseFloat(variant.mrp) : variant.mrp) : "",
+            Stock: typeof variant.stock === "string" ? parseInt(variant.stock) : variant.stock,
+          }));
+        } else {
+          return [
+            {
+              Name: product.name,
+              ModelId: product.modelId || product.id,
+              Description: product.description,
+              Category: product.category,
+              Image: product.image,
+              Processor: product.processor,
+              Screen: product.screen,
+              RAM: product.ram,
+              Storage: product.storage,
+              ColorName: product.colorName || "",
+              ColorCode: product.colorCode || "",
+              Price: product.price,
+              MRP: product.mrp || "",
+              Stock: product.stock,
+            },
+          ];
+        }
+      });
+
+      const ws = XLSX.utils.json_to_sheet(csvData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Products");
+      XLSX.writeFile(wb, "Sahu_Mobiles_Products.csv", { bookType: "csv" });
+    } catch (error) {
+      console.error("Failed to export products to CSV:", error);
+      setErrorMsg("Failed to export products to CSV.");
     }
   };
 
@@ -232,6 +290,13 @@ export default function InventoryPage() {
           <p className={styles.subtitle}>Manage your product catalog and stock levels.</p>
         </div>
         <div className={styles.headerActions}>
+          <button 
+            className="btn btn-outline" 
+            style={{ marginRight: "1rem" }}
+            onClick={exportToCSV}
+          >
+            📥 Export CSV
+          </button>
           <button 
             className="btn btn-outline" 
             style={{ marginRight: "1rem" }}

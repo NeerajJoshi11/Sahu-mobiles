@@ -69,6 +69,7 @@ export function BulkImportModal({ onClose, onSuccess }: BulkImportModalProps) {
             storage: String(row.storage || ""),
             colorName: row.colorname || "",
             colorCode: row.colorcode || "",
+            image: row.image || "",
             price: parseFloat(row.price ?? "0") || 0,
             mrp: parseFloat(row.mrp ?? "0") || 0,
             stock: parseInt(row.stock ?? "0") || 0

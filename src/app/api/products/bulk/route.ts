@@ -9,7 +9,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid data format. Expected an array." }, { status: 400 });
     }
 
-    const results = await prisma.$transaction(async (tx) => {
+    const results = await prisma.$transaction(async (tx: any) => {
       const processed = [];
       
       for (const p of products) {

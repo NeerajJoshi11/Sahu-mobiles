@@ -162,7 +162,7 @@ export default async function AdminDashboard() {
                 <h3 className={styles.alertTitle}>Low Stock Alerts</h3>
               </div>
               <div className={styles.alertList}>
-                {lowStockProducts.map(p => (
+                {lowStockProducts.map((p: any) => (
                   <div key={p.id} className={styles.alertItem}>
                     <span>{p.name}</span>
                     <span className={styles.stockCount}>{p.stock} left</span>
@@ -179,7 +179,7 @@ export default async function AdminDashboard() {
               {uniqueCustomers.length === 0 ? (
                 <p>No customers yet.</p>
               ) : (
-                uniqueCustomers.slice(0, 5).map((customer, i) => (
+                uniqueCustomers.slice(0, 5).map((customer: any, i: number) => (
                   <div key={i} className={styles.compactItem}>
                     <div className={styles.custInfo}>
                       <span className={styles.custName}>{customer.customerName}</span>
@@ -211,7 +211,7 @@ export default async function AdminDashboard() {
                 {orders.length === 0 ? (
                   <tr><td colSpan={4}>No orders found.</td></tr>
                 ) : (
-                  orders.map((order) => (
+                  orders.map((order: any) => (
                     <tr key={order.id}>
                       <td>#{order.id.slice(-4).toUpperCase()}</td>
                       <td>{order.customerName}</td>
