@@ -31,7 +31,7 @@ export default function CheckoutPage() {
     deliveryMethod: "STANDARD",
   });
 
-  const [paymentMethod, setPaymentMethod] = useState("ONLINE"); // Default to ONLINE
+  const [paymentMethod, setPaymentMethod] = useState("WHATSAPP"); // Default to WHATSAPP
   const [expressPincodes, setExpressPincodes] = useState<string[]>([]);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
@@ -295,7 +295,7 @@ export default function CheckoutPage() {
             <div className={styles.formGroup}>
               <h2 className={styles.sectionTitle}>Payment Method</h2>
               <div className={styles.deliveryOptions}>
-                <label className={`${styles.deliveryOption} ${paymentMethod === "ONLINE" ? styles.selected : ""}`}>
+                {/* <label className={`${styles.deliveryOption} ${paymentMethod === "ONLINE" ? styles.selected : ""}`}>
                   <input 
                     type="radio" 
                     name="paymentMethod" 
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
                     <span className={styles.optionName}>💳 Pay Online (UPI, Card, Netbanking)</span>
                     <span className={styles.optionDesc}>Secure payment via Easebuzz</span>
                   </div>
-                </label>
+                </label> */}
                 <label className={`${styles.deliveryOption} ${paymentMethod === "WHATSAPP" ? styles.selected : ""}`}>
                   <input 
                     type="radio" 
