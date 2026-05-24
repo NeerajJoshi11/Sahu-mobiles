@@ -8,26 +8,26 @@ datasource db {
 }
 
 model Product {
-  id            String           @id @default(cuid())
-  name          String
-  price         Float
-  mrp           Float?
-  description   String
-  image         String
-  screen        String
-  processor     String
-  ram           String           // Base RAM
-  storage       String           // Base Storage
-  category      String           @default("Smartphone")
-  stock         Int              @default(10)
-  modelId       String?          // To group different colors of the same model
-  colorName     String?          // e.g., "Cosmic Grey"
-  colorCode     String?          // e.g., "#808080"
-  hasVariants   Boolean          @default(false)
-  variants      ProductVariant[]
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  orderItems    OrderItem[]
+  id          String           @id @default(cuid())
+  name        String
+  price       Float
+  mrp         Float?
+  description String
+  image       String
+  screen      String
+  processor   String
+  ram         String // Base RAM
+  storage     String // Base Storage
+  category    String           @default("Smartphone")
+  stock       Int              @default(10)
+  modelId     String? // To group different colors of the same model
+  colorName   String? // e.g., "Cosmic Grey"
+  colorCode   String? // e.g., "#808080"
+  hasVariants Boolean          @default(false)
+  variants    ProductVariant[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  orderItems  OrderItem[]
 }
 
 model ProductVariant {
@@ -45,25 +45,25 @@ model ProductVariant {
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  userId        String?
-  customerName  String
-  customerEmail String
-  customerPhone String
-  address       String
-  pincode       String
-  total         Float
-  status        String      @default("PENDING")
-  paymentMethod String      @default("ONLINE") // ONLINE, COD, WHATSAPP
-  paymentStatus String      @default("PENDING") // PENDING, COMPLETED, COD
-  deliveryMethod String     @default("STANDARD")
-  fulfillmentProvider String @default("SAHU_LOCAL")
-  deliveryBoyName String?
-  assignedAt     DateTime?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  user          User?       @relation(fields: [userId], references: [id])
-  items         OrderItem[]
+  id                  String      @id @default(cuid())
+  userId              String?
+  customerName        String
+  customerEmail       String
+  customerPhone       String
+  address             String
+  pincode             String
+  total               Float
+  status              String      @default("PENDING")
+  paymentMethod       String      @default("ONLINE") // ONLINE, COD, WHATSAPP
+  paymentStatus       String      @default("PENDING") // PENDING, COMPLETED, COD
+  deliveryMethod      String      @default("STANDARD")
+  fulfillmentProvider String      @default("SAHU_LOCAL")
+  deliveryBoyName     String?
+  assignedAt          DateTime?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  user                User?       @relation(fields: [userId], references: [id])
+  items               OrderItem[]
 }
 
 model OrderItem {
@@ -117,15 +117,15 @@ model NewsletterSubscriber {
 }
 
 model Coupon {
-  id               String   @id @default(cuid())
-  code             String   @unique
-  type             String   @default("PERCENTAGE") // PERCENTAGE or FLAT
+  id               String    @id @default(cuid())
+  code             String    @unique
+  type             String    @default("PERCENTAGE") // PERCENTAGE or FLAT
   value            Float
-  minAmount        Float    @default(0)
-  isActive         Boolean  @default(true)
+  minAmount        Float     @default(0)
+  isActive         Boolean   @default(true)
   expiresAt        DateTime?
-  applicableBrands String?  // Comma-separated list of brands like "vivo,oppo"
-  description      String?  // Coupon description / customer message
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  applicableBrands String? // Comma-separated list of brands like "vivo,oppo"
+  description      String? // Coupon description / customer message
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
