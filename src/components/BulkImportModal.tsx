@@ -96,13 +96,16 @@ export function BulkImportModal({ onClose, onSuccess }: BulkImportModalProps) {
         body: JSON.stringify(data)
       });
 
-      if (!res.ok) throw new Error("Import failed");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Import failed");
+      }
 
       alert("Bulk import successful!");
       onSuccess();
       onClose();
-    } catch (err) {
-      setError("Failed to import products. Check console for details.");
+    } catch (err: any) {
+      setError(err.message || "Failed to import products. Check console for details.");
     } finally {
       setLoading(false);
     }
