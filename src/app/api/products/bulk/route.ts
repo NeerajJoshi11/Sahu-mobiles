@@ -9,10 +9,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid data format. Expected an array." }, { status: 400 });
     }
 
-    const results = await prisma.$transaction(async (tx: any) => {
-      const processed = [];
+    const processed = [];
+    const chunkSize = 20;
+
+    for (let i = 0; i < products.length; i += chunkSize) {
+      const chunk = products.slice(i, i + chunkSize);
       
-      for (const p of products) {
+      const chunkResults = await Promise.all(chunk.map(async (p) => {
         const { variants, id, ...rawProductData } = p;
         
         // Normalize empty strings to null to match Prisma's expected optional fields
@@ -23,7 +26,7 @@ export async function POST(request: Request) {
         };
         
         if (id) {
-          const res = await tx.product.upsert({
+          const res = await prisma.product.upsert({
             where: { id },
             update: {
               ...productData,
@@ -57,10 +60,10 @@ export async function POST(request: Request) {
               } : undefined
             }
           });
-          processed.push(res);
+          return res;
         } else {
           // Check for existing product by Name and Color to prevent duplicates
-          const existing = await tx.product.findFirst({
+          const existing = await prisma.product.findFirst({
             where: {
               name: productData.name,
               colorName: productData.colorName || null,
@@ -69,7 +72,7 @@ export async function POST(request: Request) {
           });
 
           if (existing) {
-            const res = await tx.product.update({
+            const res = await prisma.product.update({
               where: { id: existing.id },
               data: {
                 ...productData,
@@ -88,9 +91,9 @@ export async function POST(request: Request) {
                 } : undefined
               }
             });
-            processed.push(res);
+            return res;
           } else {
-            const res = await tx.product.create({
+            const res = await prisma.product.create({
               data: {
                 ...productData,
                 variants: variants && variants.length > 0 ? {
@@ -107,19 +110,17 @@ export async function POST(request: Request) {
                 } : undefined
               }
             });
-            processed.push(res);
+            return res;
           }
         }
-      }
-      return processed;
-    }, {
-      maxWait: 10000, // 10 seconds max wait to start transaction
-      timeout: 30000, // 30 seconds max duration for the transaction
-    });
+      }));
+      
+      processed.push(...chunkResults);
+    }
 
     return NextResponse.json({ 
-      message: `Successfully processed ${results.length} products.`,
-      count: results.length 
+      message: `Successfully processed ${processed.length} products.`,
+      count: processed.length 
     });
   } catch (error: any) {
     console.error("Bulk Import Error:", error);
