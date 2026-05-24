@@ -31,7 +31,7 @@ export default function CheckoutPage() {
     deliveryMethod: "STANDARD",
   });
 
-  const [paymentMethod, setPaymentMethod] = useState("WHATSAPP"); // WHATSAPP or COD
+  const [paymentMethod, setPaymentMethod] = useState("ONLINE"); // Default to ONLINE
   const [expressPincodes, setExpressPincodes] = useState<string[]>([]);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
@@ -70,6 +70,13 @@ export default function CheckoutPage() {
         const pincodeList = pincodeStr.split(",").map((p: string) => p.trim()).filter((p: string) => p.length > 0);
         setExpressPincodes(pincodeList);
       });
+
+    // Check for payment error in query parameters
+    const params = new URLSearchParams(window.location.search);
+    const errorParam = params.get("error");
+    if (errorParam) {
+      setError(errorParam);
+    }
   }, [router]);
 
   if (isAuthLoading) {
@@ -117,23 +124,42 @@ export default function CheckoutPage() {
     setError("");
 
     try {
-      // 1. Create order on server via manual payment endpoint
+      const orderPayload = {
+        ...formData,
+        paymentMethod,
+        total: finalTotal,
+        couponCode: appliedCoupon || null,
+        items: items.map(i => ({ 
+          id: i.id, 
+          name: i.name, 
+          price: i.price, 
+          quantity: i.quantity,
+          selectedColor: i.selectedColor,
+          selectedVariant: i.selectedVariant
+        }))
+      };
+
+      if (paymentMethod === "ONLINE") {
+        // Call Easebuzz endpoint to initiate online payment
+        const paymentRes = await fetch("/api/checkout/easebuzz", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderPayload),
+        });
+
+        const paymentData = await paymentRes.json();
+        if (!paymentRes.ok) throw new Error(paymentData.error || "Failed to initiate online payment");
+
+        // Redirect to Easebuzz payment page
+        window.location.href = paymentData.url;
+        return;
+      }
+
+      // Otherwise, manual (COD or WHATSAPP)
       const orderRes = await fetch("/api/checkout/manual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          paymentMethod,
-          total: finalTotal,
-          items: items.map(i => ({ 
-            id: i.id, 
-            name: i.name, 
-            price: i.price, 
-            quantity: i.quantity,
-            selectedColor: i.selectedColor,
-            selectedVariant: i.selectedVariant
-          }))
-        }),
+        body: JSON.stringify(orderPayload),
       });
 
       const orderData = await orderRes.json();
@@ -269,6 +295,19 @@ export default function CheckoutPage() {
             <div className={styles.formGroup}>
               <h2 className={styles.sectionTitle}>Payment Method</h2>
               <div className={styles.deliveryOptions}>
+                <label className={`${styles.deliveryOption} ${paymentMethod === "ONLINE" ? styles.selected : ""}`}>
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    value="ONLINE" 
+                    checked={paymentMethod === "ONLINE"}
+                    onChange={() => setPaymentMethod("ONLINE")}
+                  />
+                  <div className={styles.optionContent}>
+                    <span className={styles.optionName}>💳 Pay Online (UPI, Card, Netbanking)</span>
+                    <span className={styles.optionDesc}>Secure payment via Easebuzz</span>
+                  </div>
+                </label>
                 <label className={`${styles.deliveryOption} ${paymentMethod === "WHATSAPP" ? styles.selected : ""}`}>
                   <input 
                     type="radio" 

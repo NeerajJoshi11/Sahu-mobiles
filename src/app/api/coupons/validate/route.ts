@@ -1,35 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getProductBrand } from "@/lib/pricing";
 
-const brandKeywords: Record<string, string[]> = {
-  "apple": ["apple", "iphone", "ipad", "macbook", "airpods", "watch"],
-  "samsung": ["samsung", "galaxy"],
-  "mi": ["mi", "redmi", "xiaomi", "poco"],
-};
-
-function getProductBrand(name: string, description: string = ""): string {
-  const nameLower = name.toLowerCase();
-  const descLower = description.toLowerCase();
-  
-  for (const [brand, keywords] of Object.entries(brandKeywords)) {
-    for (const kw of keywords) {
-      const regex = new RegExp(`\\b${kw}\\b`, 'i');
-      if (regex.test(nameLower) || regex.test(descLower)) {
-        return brand;
-      }
-    }
-  }
-  
-  const knownBrands = ["vivo", "oppo", "realme", "motorola", "mi"];
-  for (const brand of knownBrands) {
-    const regex = new RegExp(`\\b${brand}\\b`, 'i');
-    if (regex.test(nameLower) || regex.test(descLower)) {
-      return brand;
-    }
-  }
-  
-  return "other";
-}
 
 export async function POST(request: Request) {
   try {
@@ -76,7 +48,7 @@ export async function POST(request: Request) {
       });
 
       if (applicableItems.length === 0) {
-        const brandNames = restrictedBrands.map(b => b.charAt(0).toUpperCase() + b.slice(1)).join(" or ");
+        const brandNames = restrictedBrands.map((b: string) => b.charAt(0).toUpperCase() + b.slice(1)).join(" or ");
         return NextResponse.json({ 
           error: coupon.description || `This coupon is only applicable to ${brandNames} products.` 
         }, { status: 400 });

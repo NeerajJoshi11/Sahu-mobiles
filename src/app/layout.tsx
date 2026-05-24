@@ -44,7 +44,6 @@ export default function RootLayout({
           <CartDrawer />
           <WhatsAppPopup />
         </CartProvider>
-        <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       </body>
     </html>
   );
