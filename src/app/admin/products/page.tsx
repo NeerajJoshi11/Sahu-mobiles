@@ -44,6 +44,8 @@ export default function InventoryPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<Product | null>(null);
+  const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Form State
@@ -74,6 +76,7 @@ export default function InventoryPage() {
       const res = await fetch("/api/products");
       const data = await res.json();
       setProducts(data);
+      setSelectedProducts([]);
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
@@ -282,6 +285,48 @@ export default function InventoryPage() {
     }
   };
 
+  const handleBulkDelete = async () => {
+    setIsDeleting(true);
+    setErrorMsg("");
+    
+    try {
+      const res = await fetch(`/api/products/bulk`, { 
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: selectedProducts })
+      });
+      
+      if (!res.ok) {
+        const data = await res.json();
+        setErrorMsg(data.error || "Failed to delete products. Some might be linked to existing orders.");
+        return;
+      }
+      
+      setShowBulkDeleteModal(false);
+      setSelectedProducts([]);
+      fetchProducts();
+    } catch (error) {
+      console.error("Failed to bulk delete products:", error);
+      setErrorMsg("Network error occurred while trying to delete products.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedProducts(products.map(p => p.id));
+    } else {
+      setSelectedProducts([]);
+    }
+  };
+
+  const handleSelectProduct = (id: string) => {
+    setSelectedProducts(prev => 
+      prev.includes(id) ? prev.filter(pId => pId !== id) : [...prev, id]
+    );
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -290,6 +335,15 @@ export default function InventoryPage() {
           <p className={styles.subtitle}>Manage your product catalog and stock levels.</p>
         </div>
         <div className={styles.headerActions}>
+          {selectedProducts.length > 0 && (
+            <button 
+              className="btn btn-outline" 
+              style={{ marginRight: "1rem", color: "#ff4444", borderColor: "#ff4444" }}
+              onClick={() => setShowBulkDeleteModal(true)}
+            >
+              🗑️ Delete Selected ({selectedProducts.length})
+            </button>
+          )}
           <button 
             className="btn btn-outline" 
             style={{ marginRight: "1rem" }}
@@ -324,6 +378,14 @@ export default function InventoryPage() {
         <table className={styles.table}>
           <thead>
             <tr>
+              <th style={{ width: "40px", textAlign: "center" }}>
+                <input 
+                  type="checkbox" 
+                  checked={products.length > 0 && selectedProducts.length === products.length}
+                  onChange={handleSelectAll}
+                  style={{ cursor: "pointer" }}
+                />
+              </th>
               <th>Product Name</th>
               <th>Category</th>
               <th>Color</th>
@@ -335,12 +397,20 @@ export default function InventoryPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5}>Loading inventory...</td></tr>
+              <tr><td colSpan={8} style={{ textAlign: "center", padding: "2rem" }}>Loading inventory...</td></tr>
             ) : products.length === 0 ? (
-              <tr><td colSpan={5}>No products found. Add your first phone!</td></tr>
+              <tr><td colSpan={8} style={{ textAlign: "center", padding: "2rem" }}>No products found. Add your first phone!</td></tr>
             ) : (
               products.map((product) => (
-                <tr key={product.id}>
+                <tr key={product.id} style={{ backgroundColor: selectedProducts.includes(product.id) ? "rgba(0,0,0,0.02)" : "transparent" }}>
+                  <td style={{ textAlign: "center" }}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedProducts.includes(product.id)}
+                      onChange={() => handleSelectProduct(product.id)}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </td>
                   <td className={styles.productName}>{product.name}</td>
                   <td>{product.category}</td>
                   <td>
@@ -646,6 +716,36 @@ export default function InventoryPage() {
               <button 
                 className={styles.confirmDeleteBtn} 
                 onClick={() => handleDelete(showDeleteModal.id)}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Permanently"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showBulkDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={`${styles.modal} ${styles.deleteModal}`}>
+            <div className={styles.deleteIcon}>⚠️</div>
+            <h2 className={styles.modalTitle}>Delete Multiple Products?</h2>
+            <p className={styles.modalSubtitle}>
+              Are you sure you want to delete <strong>{selectedProducts.length}</strong> products? 
+              This will remove them from the store permanently.
+            </p>
+            <div className={styles.modalActions}>
+              <button 
+                className="btn btn-outline" 
+                style={{ flex: 1 }}
+                onClick={() => setShowBulkDeleteModal(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button 
+                className={styles.confirmDeleteBtn} 
+                onClick={handleBulkDelete}
                 disabled={isDeleting}
               >
                 {isDeleting ? "Deleting..." : "Delete Permanently"}

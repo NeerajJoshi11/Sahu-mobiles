@@ -1,24 +1,55 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-export async function POST(request: Request) {
-  try {
-    const products = await request.json(); // Expects an array of product objects with nested variants
-
-    if (!Array.isArray(products)) {
-      return NextResponse.json({ error: "Invalid data format. Expected an array." }, { status: 400 });
+async function testImport() {
+  const products = [
+    {
+      "name": "iPhone 17 Pro",
+      "modelId": "iphone-17-pro",
+      "description": "Next-gen flagship",
+      "category": "Mobiles",
+      "image": "https://example.com/iphone.jpg",
+      "processor": "A19 Pro",
+      "screen": "6.7 inch OLED",
+      "ram": "8GB",
+      "storage": "128GB",
+      "colorName": "Space Black",
+      "colorCode": "#000000",
+      "price": 129999,
+      "stock": 50,
+      "hasVariants": true,
+      "variants": [
+        {
+          "ram": "8GB",
+          "storage": "128GB",
+          "colorName": "Space Black",
+          "colorCode": "#000000",
+          "image": "https://example.com/iphone.jpg",
+          "price": 129999,
+          "mrp": 139999,
+          "stock": 50
+        },
+        {
+          "ram": "8GB",
+          "storage": "256GB",
+          "colorName": "Natural Titanium",
+          "colorCode": "#bebebe",
+          "image": "",
+          "price": 139999,
+          "mrp": 149999,
+          "stock": 30
+        }
+      ]
     }
+  ];
 
-    const processed = [];
-    const chunkSize = 20;
-
-    for (let i = 0; i < products.length; i += chunkSize) {
-      const chunk = products.slice(i, i + chunkSize);
+  try {
+    const results = await prisma.$transaction(async (tx) => {
+      const processed = [];
       
-      const chunkResults = await Promise.all(chunk.map(async (p) => {
+      for (const p of products) {
         const { variants, id, ...rawProductData } = p;
         
-        // Normalize empty strings to null to match Prisma's expected optional fields
         const productData = {
           ...rawProductData,
           colorName: rawProductData.colorName || null,
@@ -26,13 +57,13 @@ export async function POST(request: Request) {
         };
         
         if (id) {
-          const res = await prisma.product.upsert({
+          const res = await tx.product.upsert({
             where: { id },
             update: {
               ...productData,
               variants: variants && variants.length > 0 ? {
                 deleteMany: {},
-                create: variants.map((v: any) => ({
+                create: variants.map((v) => ({
                   ram: String(v.ram),
                   storage: String(v.storage),
                   colorName: v.colorName || null,
@@ -47,7 +78,7 @@ export async function POST(request: Request) {
             create: {
               ...productData,
               variants: variants && variants.length > 0 ? {
-                create: variants.map((v: any) => ({
+                create: variants.map((v) => ({
                   ram: String(v.ram),
                   storage: String(v.storage),
                   colorName: v.colorName || null,
@@ -60,10 +91,9 @@ export async function POST(request: Request) {
               } : undefined
             }
           });
-          return res;
+          processed.push(res);
         } else {
-          // Check for existing product by Name and Color to prevent duplicates
-          const existing = await prisma.product.findFirst({
+          const existing = await tx.product.findFirst({
             where: {
               name: productData.name,
               colorName: productData.colorName || null,
@@ -72,13 +102,13 @@ export async function POST(request: Request) {
           });
 
           if (existing) {
-            const res = await prisma.product.update({
+            const res = await tx.product.update({
               where: { id: existing.id },
               data: {
                 ...productData,
                 variants: variants && variants.length > 0 ? {
                   deleteMany: {},
-                  create: variants.map((v: any) => ({
+                  create: variants.map((v) => ({
                     ram: String(v.ram),
                     storage: String(v.storage),
                     colorName: v.colorName || null,
@@ -91,13 +121,13 @@ export async function POST(request: Request) {
                 } : undefined
               }
             });
-            return res;
+            processed.push(res);
           } else {
-            const res = await prisma.product.create({
+            const res = await tx.product.create({
               data: {
                 ...productData,
                 variants: variants && variants.length > 0 ? {
-                  create: variants.map((v: any) => ({
+                  create: variants.map((v) => ({
                     ram: String(v.ram),
                     storage: String(v.storage),
                     colorName: v.colorName || null,
@@ -110,68 +140,22 @@ export async function POST(request: Request) {
                 } : undefined
               }
             });
-            return res;
+            processed.push(res);
           }
         }
-      }));
-      
-      processed.push(...chunkResults);
-    }
-
-    return NextResponse.json({ 
-      message: `Successfully processed ${processed.length} products.`,
-      count: processed.length 
+      }
+      return processed;
+    }, {
+      maxWait: 10000,
+      timeout: 30000,
     });
-  } catch (error: any) {
+    
+    console.log("Success! Processed:", results.length);
+  } catch (error) {
     console.error("Bulk Import Error:", error);
-    return NextResponse.json({ error: "Failed to process bulk import: " + error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
-export async function DELETE(request: Request) {
-  try {
-    const { ids } = await request.json();
-
-    if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return NextResponse.json(
-        { error: "No product IDs provided" },
-        { status: 400 }
-      );
-    }
-
-    console.log("Attempting to bulk delete products with IDs:", ids);
-
-    // Using transaction to delete all or none if required, but deleteMany works too
-    const result = await prisma.product.deleteMany({
-      where: {
-        id: {
-          in: ids,
-        },
-      },
-    });
-
-    console.log(`Successfully deleted ${result.count} products`);
-    return NextResponse.json({
-      message: `Successfully deleted ${result.count} products`,
-      count: result.count,
-    });
-  } catch (error: any) {
-    console.error("Bulk deletion error:", error);
-
-    // Handle Prisma Foreign Key constraint errors gracefully
-    if (error.code === "P2003") {
-      return NextResponse.json(
-        {
-          error:
-            "Cannot delete some products because they have been ordered. Try setting their stock to 0 instead.",
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Failed to delete products: " + error.message },
-      { status: 500 }
-    );
-  }
-}
+testImport();
