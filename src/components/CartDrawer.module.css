@@ -312,3 +312,29 @@
   text-align: center;
   padding: 1rem;
 }
+
+.whatsappBargainCartBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.85rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  background: transparent;
+  color: #25D366;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.whatsappBargainCartBtn:hover {
+  background: rgba(37, 211, 102, 0.08);
+  border-color: #25D366;
+}
+
+.whatsappIcon {
+  color: #25D366;
+}

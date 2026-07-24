@@ -206,3 +206,64 @@
   font-size: 0.7rem;
   color: var(--muted-foreground);
 }
+
+.whatsappBargainBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  background: transparent;
+  color: #25D366;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.whatsappBargainBtn:hover {
+  background: rgba(37, 211, 102, 0.08);
+  border-color: #25D366;
+  transform: translateY(-1px);
+}
+
+.whatsappIcon {
+  color: #25D366;
+}
+
+.stickyButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.stickyCartBtn {
+  flex: 2;
+}
+
+.whatsappBargainBtnSticky {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  background: transparent;
+  color: #25D366;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  flex: 1;
+  white-space: nowrap;
+}
+
+.whatsappBargainBtnSticky:hover {
+  background: rgba(37, 211, 102, 0.08);
+  border-color: #25D366;
+}
