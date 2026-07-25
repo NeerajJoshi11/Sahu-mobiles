@@ -134,7 +134,7 @@ export async function POST(request: Request) {
     formParams.append("udf6", "");
     formParams.append("udf7", "");
 
-    const response = await fetch(`${config.baseUrl}/payment/initiate.php`, {
+    const response = await fetch(`${config.baseUrl}/payment/initiateLink`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
