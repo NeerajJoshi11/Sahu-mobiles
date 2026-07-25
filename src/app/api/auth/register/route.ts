@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if user exists
+    // Check if user exists by email
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -25,6 +25,20 @@ export async function POST(request: Request) {
         { error: "Email already registered" },
         { status: 400 }
       );
+    }
+
+    // Check if user exists by phone
+    if (phone) {
+      const existingPhone = await prisma.user.findUnique({
+        where: { phone },
+      });
+
+      if (existingPhone) {
+        return NextResponse.json(
+          { error: "Phone number already registered" },
+          { status: 400 }
+        );
+      }
     }
 
     // Hash password
@@ -53,7 +67,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("REGISTER_ERROR:", error);
     return NextResponse.json(
-      { error: "Registration failed", details: error.message },
+      { error: "Registration failed. Please try again." },
       { status: 500 }
     );
   }
