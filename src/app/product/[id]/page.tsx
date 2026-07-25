@@ -64,7 +64,37 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     }
   }, [selectedColor, product, selectedVariant]);
 
-  if (!product) return <div className="container py-20 text-center">Loading product...</div>;
+  if (!product) {
+    return (
+      <main className={styles.page}>
+        <div className="container">
+          <div className={styles.grid}>
+            {/* Image Gallery Skeleton */}
+            <div className={styles.imageGallery}>
+              <div className={`${styles.mainImageContainer} ${styles.skeletonPulse}`}></div>
+            </div>
+
+            {/* Details Skeleton */}
+            <div className={styles.details}>
+              <div className={`${styles.skeletonLine} ${styles.skeletonTitle}`}></div>
+              <div className={`${styles.skeletonLine} ${styles.skeletonDescLine1}`}></div>
+              <div className={`${styles.skeletonLine} ${styles.skeletonDescLine2}`}></div>
+              <div className={`${styles.skeletonLine} ${styles.skeletonDescLine3}`}></div>
+
+              <div className={styles.specs}>
+                <div className={`${styles.skeletonLine} ${styles.skeletonSpecsTitle}`}></div>
+                <div className={`${styles.skeletonLine} ${styles.skeletonSpecItem}`}></div>
+                <div className={`${styles.skeletonLine} ${styles.skeletonSpecItem}`}></div>
+                <div className={`${styles.skeletonLine} ${styles.skeletonSpecItem}`}></div>
+              </div>
+
+              <div className={`${styles.skeletonLine} ${styles.skeletonSelector}`}></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className={styles.page}>

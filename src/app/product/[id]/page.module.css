@@ -123,3 +123,58 @@
     top: 6rem;
   }
 }
+
+.skeletonLine {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 200% 100%;
+  animation: loadingPulse 1.5s infinite;
+  border-radius: var(--radius);
+}
+
+.skeletonPulse {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 200% 100%;
+  animation: loadingPulse 1.5s infinite;
+}
+
+@keyframes loadingPulse {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeletonTitle {
+  height: 3rem;
+  width: 70%;
+  margin-bottom: 2rem;
+}
+
+.skeletonDescLine1, .skeletonDescLine2, .skeletonDescLine3 {
+  height: 1.125rem;
+  margin-bottom: 0.75rem;
+}
+
+.skeletonDescLine1 { width: 100%; }
+.skeletonDescLine2 { width: 95%; }
+.skeletonDescLine3 { width: 75%; margin-bottom: 3rem; }
+
+.skeletonSpecsTitle {
+  height: 1.5rem;
+  width: 40%;
+  margin-bottom: 1.5rem;
+}
+
+.skeletonSpecItem {
+  height: 1.25rem;
+  width: 80%;
+  margin-bottom: 1rem;
+}
+
+.skeletonSelector {
+  height: 6rem;
+  width: 100%;
+  margin-top: 1rem;
+}
